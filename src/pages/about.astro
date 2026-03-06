@@ -1,0 +1,116 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CTASection from "../components/CTASection.astro";
+import FeatureCard from "../components/FeatureCard.astro";
+import Hero from "../components/Hero.astro";
+import SectionIntro from "../components/SectionIntro.astro";
+
+const values = [
+  {
+    title: "Curiosity with purpose",
+    description:
+      "We want children to ask big questions and learn how to investigate them with discipline, care, and joy."
+  },
+  {
+    title: "Warmth and trust",
+    description:
+      "Children learn best when they feel known, respected, and safe enough to attempt challenging work."
+  },
+  {
+    title: "High expectations, thoughtfully held",
+    description:
+      "We believe young learners are capable of more depth, nuance, and originality than traditional models often allow."
+  },
+  {
+    title: "Character and autonomy",
+    description:
+      "Academic growth matters, and so do reflection, responsibility, empathy, and the ability to work independently."
+  }
+];
+
+const storyCards = [
+  {
+    title: "An English-language campus in Merida",
+    description:
+      "Primary Colossal Academy serves families seeking a globally minded education rooted in strong relationships and intellectual ambition."
+  },
+  {
+    title: "A clear educational vision",
+    description:
+      "The school is designed for children who thrive when learning is active, challenging, and responsive to their strengths."
+  },
+  {
+    title: "Leadership with an international perspective",
+    description:
+      "The campus is shaped by a broad educational outlook that values gifted learning, thoughtful pedagogy, and a close partnership with families."
+  }
+];
+---
+
+<BaseLayout
+  title="About | Primary Colossal Academy"
+  description="Learn about the story, mission, values, and educational vision behind Primary Colossal Academy in Merida."
+  currentPath="/about"
+>
+  <Hero
+    eyebrow="About the school"
+    title="A warm primary campus with"
+    highlight="clear purpose and high expectations."
+    description="Primary Colossal Academy exists to give children an education that is intellectually ambitious, emotionally grounded, and carefully designed for meaningful growth."
+    primaryCta={{ href: "/contact", label: "Request information" }}
+    secondaryCta={{ href: "/approach", label: "Explore the approach" }}
+    imageSrc="/images/admissions-welcome.svg"
+    imageAlt="Illustrated family and school welcome scene"
+  />
+
+  <section class="section-spacing pt-8">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Our story"
+        title="Built for families looking for more than a conventional primary model"
+        description="This campus brings together careful academics, a strong sense of belonging, and a learning culture that respects bright children as capable thinkers."
+      />
+      <div class="grid gap-6 md:grid-cols-3">
+        {storyCards.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing bg-white">
+    <div class="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+      <SectionIntro
+        eyebrow="Mission"
+        title="To cultivate capable, curious, and confident young learners"
+        description="We aim to nurture children who think deeply, express themselves clearly, care about their communities, and develop the independence to keep learning throughout life."
+      />
+      <div class="feature-card feature-card-highlight">
+        <p class="eyebrow">Educational vision</p>
+        <p class="mt-4 text-lg leading-8 text-slate-700">
+          We believe gifted and advanced learners deserve a school experience that combines challenge,
+          creativity, emotional understanding, and authentic student voice. Our work is to create that
+          environment every day.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Values"
+        title="The principles that shape the school"
+        description="These values guide classroom life, family communication, and the overall experience children have on campus."
+      />
+      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {values.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    title="Interested in whether Primary Colossal Academy is the right fit for your family?"
+    description="We welcome thoughtful questions and family conversations about your child, your priorities, and the kind of learning environment you are seeking."
+    primaryCta={{ href: "/admissions", label: "See admissions" }}
+    secondaryCta={{ href: "/contact", label: "Contact us" }}
+  />
+</BaseLayout>

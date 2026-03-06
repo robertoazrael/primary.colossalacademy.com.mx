@@ -1,0 +1,108 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CTASection from "../components/CTASection.astro";
+import FeatureCard from "../components/FeatureCard.astro";
+import Hero from "../components/Hero.astro";
+import SectionIntro from "../components/SectionIntro.astro";
+
+const activityAreas = [
+  {
+    title: "Inquiry projects",
+    description:
+      "Students investigate rich questions, gather evidence, test ideas, and present their thinking in authentic ways."
+  },
+  {
+    title: "Literacy and expression",
+    description:
+      "Reading, writing, speaking, and storytelling are treated as tools for thought, creativity, and communication."
+  },
+  {
+    title: "Math with depth",
+    description:
+      "Problem solving, pattern seeking, and mathematical reasoning are emphasized alongside fluency."
+  },
+  {
+    title: "Creative arts",
+    description:
+      "Children sketch, build, perform, and create, learning to express ideas through multiple forms."
+  },
+  {
+    title: "Science and discovery",
+    description:
+      "Hands-on exploration helps children observe closely, ask better questions, and think like investigators."
+  },
+  {
+    title: "Enrichment experiences",
+    description:
+      "Special projects and thematic studies widen horizons and help students discover emerging passions."
+  }
+];
+
+const examples = [
+  {
+    title: "Research and presentation showcases",
+    description:
+      "Students can prepare visual displays, talks, or models that communicate what they have learned with confidence and clarity."
+  },
+  {
+    title: "Cross-disciplinary studio work",
+    description:
+      "A single project may bring together literacy, science, design, and collaboration around one meaningful theme."
+  },
+  {
+    title: "Exploration that feels joyful",
+    description:
+      "Children are more likely to persist when school feels alive with ideas, making, discussion, and discovery."
+  }
+];
+---
+
+<BaseLayout
+  title="Activities | Primary Colossal Academy"
+  description="Explore the projects, enrichment, creativity, and learning experiences that shape student life at Primary Colossal Academy."
+  currentPath="/activities"
+>
+  <Hero
+    eyebrow="Student life and activities"
+    title="Learning that extends beyond"
+    highlight="worksheets into making, exploring, and creating."
+    description="Student life at Primary Colossal Academy is designed to feel intellectually alive. Children encounter ideas through projects, workshops, discussion, experimentation, and creative expression."
+    primaryCta={{ href: "/contact", label: "Ask about student life" }}
+    secondaryCta={{ href: "/approach", label: "See our approach" }}
+    imageSrc="/images/inquiry-projects.svg"
+    imageAlt="Illustrated creative project and science activity scene"
+  />
+
+  <section class="section-spacing pt-8">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Learning experiences"
+        title="A rich mix of academics, creativity, and exploration"
+        description="Activities are not separate from learning. They are one of the ways children deepen understanding and discover how they like to think."
+      />
+      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {activityAreas.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing bg-white">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="What families can expect"
+        title="Visible learning, thoughtful projects, and memorable experiences"
+        description="Children benefit when their school day includes both rigorous academics and opportunities to create something meaningful."
+      />
+      <div class="grid gap-6 md:grid-cols-3">
+        {examples.map((item) => <FeatureCard {...item} tone="highlight" />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    title="Would your child thrive in a school day filled with inquiry and creativity?"
+    description="Families are welcome to ask about projects, enrichment, classroom rhythm, and the kinds of experiences students have across the year."
+    primaryCta={{ href: "/contact", label: "Contact us" }}
+    secondaryCta={{ href: "/admissions", label: "Apply for admissions" }}
+  />
+</BaseLayout>
