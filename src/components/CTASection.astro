@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  primaryCta: { href: string; label: string };
+  secondaryCta?: { href: string; label: string };
+}
+
+const { title, description, primaryCta, secondaryCta } = Astro.props;
+---
+
+<section class="section-spacing pt-0">
+  <div class="container">
+    <div class="cta-panel">
+      <div class="space-y-4">
+        <p class="eyebrow text-white/80">Begin the conversation</p>
+        <h2 class="max-w-2xl text-3xl font-extrabold text-white md:text-4xl">{title}</h2>
+        <p class="max-w-2xl text-lg leading-8 text-white/80">{description}</p>
+      </div>
+      <div class="flex flex-wrap gap-4">
+        <a href={primaryCta.href} class="btn-primary bg-white text-[color:var(--color-primary)] hover:bg-[color:var(--color-bg-soft)]">
+          {primaryCta.label}
+        </a>
+        {secondaryCta && (
+          <a href={secondaryCta.href} class="btn-secondary border-white/30 bg-white/10 text-white hover:bg-white/20">
+            {secondaryCta.label}
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

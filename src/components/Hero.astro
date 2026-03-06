@@ -1,0 +1,46 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  highlight?: string;
+  description: string;
+  primaryCta: { href: string; label: string };
+  secondaryCta?: { href: string; label: string };
+  imageSrc: string;
+  imageAlt: string;
+}
+
+const {
+  eyebrow,
+  title,
+  highlight,
+  description,
+  primaryCta,
+  secondaryCta,
+  imageSrc,
+  imageAlt
+} = Astro.props;
+---
+
+<section class="hero-shell">
+  <div class="container grid gap-10 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-24">
+    <div class="space-y-6">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1 class="max-w-3xl text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl lg:text-6xl">
+        {title}
+        {highlight && <span class="block text-[color:var(--color-primary)]">{highlight}</span>}
+      </h1>
+      <p class="max-w-2xl text-lg leading-8 text-slate-600">{description}</p>
+      <div class="flex flex-wrap gap-4">
+        <a href={primaryCta.href} class="btn-primary">{primaryCta.label}</a>
+        {secondaryCta && (
+          <a href={secondaryCta.href} class="btn-secondary">{secondaryCta.label}</a>
+        )}
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <img src={imageSrc} alt={imageAlt} class="h-full w-full object-cover" loading="eager" />
+    </div>
+  </div>
+</section>

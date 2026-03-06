@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CTASection from "../components/CTASection.astro";
+import FeatureCard from "../components/FeatureCard.astro";
+import Hero from "../components/Hero.astro";
+import SectionIntro from "../components/SectionIntro.astro";
+
+const steps = [
+  {
+    title: "1. Initial inquiry",
+    description:
+      "Reach out to share your child’s age, background, and what you are looking for in a school experience."
+  },
+  {
+    title: "2. Conversation and tour",
+    description:
+      "We invite families to learn more about the campus, meet the team, and ask detailed questions about fit."
+  },
+  {
+    title: "3. Student review",
+    description:
+      "Age-appropriate next steps help us understand readiness, strengths, and how we can support a child well."
+  },
+  {
+    title: "4. Enrollment guidance",
+    description:
+      "If the match is strong, we guide the family through the remaining steps with clarity and care."
+  }
+];
+
+const reassurance = [
+  {
+    title: "A personal process",
+    description:
+      "Admissions is meant to be a conversation, not a transaction. We want families to feel informed and respected."
+  },
+  {
+    title: "Fit comes first",
+    description:
+      "We care about whether the environment aligns with your child’s needs, temperament, and learning profile."
+  },
+  {
+    title: "Questions are welcome",
+    description:
+      "Families often want to discuss giftedness, readiness, language, or school culture. Those questions matter."
+  }
+];
+---
+
+<BaseLayout
+  title="Admissions | Primary Colossal Academy"
+  description="Learn about the admissions process for Primary Colossal Academy and how families can begin the conversation."
+  currentPath="/admissions"
+>
+  <Hero
+    eyebrow="Admissions"
+    title="A warm, thoughtful admissions process for"
+    highlight="families seeking the right school fit."
+    description="Choosing a primary school is significant. We aim to make the process clear, personal, and centered on what your child needs to thrive."
+    primaryCta={{ href: "/contact", label: "Make an inquiry" }}
+    secondaryCta={{ href: "/gifted-learning", label: "See gifted support" }}
+    imageSrc="/images/admissions-welcome.svg"
+    imageAlt="Illustrated welcome and admissions conversation scene"
+  />
+
+  <section class="section-spacing pt-8">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Process"
+        title="A simple path to getting to know the school"
+        description="The admissions experience is designed to help both the school and the family determine whether Primary Colossal Academy is the right match."
+      />
+      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        {steps.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing bg-white">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="For families"
+        title="What you can expect from us"
+        description="We know families are making an important decision. Clarity, warmth, and honest communication are part of the process."
+      />
+      <div class="grid gap-6 md:grid-cols-3">
+        {reassurance.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    title="Ready to begin?"
+    description="Tell us a little about your child and your family’s priorities, and we will guide you through the next step."
+    primaryCta={{ href: "/contact", label: "Contact admissions" }}
+    secondaryCta={{ href: "/about", label: "Learn about the school" }}
+  />
+</BaseLayout>

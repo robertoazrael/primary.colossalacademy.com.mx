@@ -1,25 +1,279 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CTASection from "../components/CTASection.astro";
+import FeatureCard from "../components/FeatureCard.astro";
+import Hero from "../components/Hero.astro";
+import SectionIntro from "../components/SectionIntro.astro";
+import TestimonialCard from "../components/TestimonialCard.astro";
+import ThreePillarSection from "../components/ThreePillarSection.astro";
+
+const choicePoints = [
+  {
+    title: "Small-school attention",
+    description:
+      "Children are known well by their teachers, which allows strengths, interests, and next steps to be seen clearly."
+  },
+  {
+    title: "Depth over repetition",
+    description:
+      "Learners spend their energy on thinking, making, questioning, and revising instead of repeating work they have already mastered."
+  },
+  {
+    title: "A true fit for advanced learners",
+    description:
+      "Challenge is calibrated with intention so bright students feel stretched, supported, and emotionally understood."
+  }
+];
+
+const approachCards = [
+  {
+    title: "Inquiry with structure",
+    description:
+      "Teachers frame rigorous questions, standards, and goals, then invite students to investigate, discuss, and build meaning."
+  },
+  {
+    title: "Voice and ownership",
+    description:
+      "Students make choices about topics, formats, and pathways, learning how to plan, reflect, and take responsibility for their work."
+  },
+  {
+    title: "Guided differentiation",
+    description:
+      "Expert educators notice readiness levels quickly and adjust support, pace, and complexity so every child can grow."
+  }
+];
+
+const nowCards = [
+  {
+    title: "Curiosity must stay alive",
+    description:
+      "Children need classrooms that protect wonder, ask for original thinking, and turn questions into serious learning."
+  },
+  {
+    title: "Confidence grows through real work",
+    description:
+      "Students become self-directed when they practice planning, revising, presenting, and recovering from challenge."
+  },
+  {
+    title: "Future readiness starts early",
+    description:
+      "Creativity, communication, adaptability, and ethical judgment are built through everyday experiences, not postponed until later grades."
+  }
+];
+
+const giftedCards = [
+  {
+    title: "Personalized challenge",
+    description:
+      "When a child is ready to go further, we increase depth, complexity, and independence rather than asking them to wait."
+  },
+  {
+    title: "Whole-child support",
+    description:
+      "Advanced learners often need academic challenge and thoughtful emotional guidance. We plan for both."
+  },
+  {
+    title: "Projects with meaning",
+    description:
+      "Students investigate real questions, synthesize ideas across subjects, and create work that reflects deep understanding."
+  }
+];
+
+const lifeCards = [
+  {
+    title: "Creative workshops",
+    description:
+      "Children write, design, build, present, and perform in ways that connect academics with imagination."
+  },
+  {
+    title: "Enrichment and exploration",
+    description:
+      "Hands-on experiences invite students to test ideas, solve problems, and follow interests with purpose."
+  },
+  {
+    title: "A joyful school day",
+    description:
+      "Warm routines, thoughtful classroom culture, and strong relationships help children feel secure enough to do ambitious work."
+  }
+];
+
+const pillars = [
+  {
+    subtitle: "The Educator",
+    title: "Expert guide and mentor",
+    description:
+      "Teachers shape high expectations, coach strong habits, and provide the differentiated support that gifted learners need.",
+    points: [
+      "Sets clear learning goals and academic rigor",
+      "Adjusts challenge and support with intention",
+      "Builds trust, reflection, and strong study habits"
+    ]
+  },
+  {
+    subtitle: "The Student",
+    title: "Active, capable learner",
+    description:
+      "Children are encouraged to ask questions, pursue ideas, and build ownership of their learning in age-appropriate ways.",
+    points: [
+      "Practices voice, choice, and responsibility",
+      "Learns to revise, present, and persist",
+      "Develops confidence through meaningful work"
+    ]
+  },
+  {
+    subtitle: "The Learning Environment",
+    title: "Designed for growth",
+    description:
+      "The classroom culture, materials, and routines create the conditions for curiosity, focus, and intellectual risk-taking.",
+    points: [
+      "Rich resources and purposeful projects",
+      "Warm routines that support independence",
+      "Thoughtful use of tools to extend learning"
+    ]
+  }
+];
+
+const testimonials = [
+  {
+    quote:
+      "Our child feels both challenged and genuinely known here. That combination is rare and it has made a real difference.",
+    name: "Parent testimonial placeholder",
+    role: "Family of a primary student"
+  },
+  {
+    quote:
+      "The teachers balance warmth with serious academic expectations. Our daughter comes home talking about ideas, not worksheets.",
+    name: "Parent testimonial placeholder",
+    role: "Family of a Year 3 student"
+  },
+  {
+    quote:
+      "We were looking for a school that would nurture curiosity and confidence together. This campus feels intentionally built for that.",
+    name: "Parent testimonial placeholder",
+    role: "Prospective family feedback"
+  }
+];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Primary Colossal Academy</title>
-  </head>
+<BaseLayout
+  title="Primary Colossal Academy | A Warm, Ambitious Primary School in Merida"
+  description="Primary Colossal Academy is an English-language primary school in Merida, Mexico, designed for curious, gifted, and advanced learners."
+  currentPath="/"
+>
+  <Hero
+    eyebrow="Primary Colossal Academy in Merida"
+    title="A primary school where bright children are"
+    highlight="known, challenged, and inspired."
+    description="Primary Colossal Academy offers a warm, intellectually rich learning environment for children who thrive on curiosity, depth, creativity, and meaningful academic challenge."
+    primaryCta={{ href: "/admissions", label: "Explore admissions" }}
+    secondaryCta={{ href: "/approach", label: "See our approach" }}
+    imageSrc="/images/hero-learning.svg"
+    imageAlt="Illustrated classroom scene with children learning together"
+  />
 
-  <body class="bg-gray-50 flex items-center justify-center h-screen">
-
-    <div class="text-center">
-
-      <h1 class="text-4xl font-bold text-purple-700">
-        Primary Colossal Academy
-      </h1>
-
-      <p class="mt-4 text-gray-600">
-        Website coming soon!
-      </p>
-
+  <section class="section-spacing pt-8">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Why families choose us"
+        title="A school built for thoughtful growth"
+        description="Families come to Primary Colossal Academy for personal attention, serious learning, and an environment where advanced learners do not have to hide their curiosity."
+      />
+      <div class="grid gap-6 md:grid-cols-3">
+        {choicePoints.map((item) => <FeatureCard {...item} />)}
+      </div>
     </div>
+  </section>
 
-  </body>
-</html>
+  <section class="section-spacing bg-white">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Educational approach"
+        title="Learning is active, guided, and deeply personal"
+        description="Inspired by student agency, our model gives children real ownership while keeping expert teaching, strong standards, and caring mentorship at the center."
+      />
+      <div class="grid gap-6 md:grid-cols-3">
+        {approachCards.map((item, index) => (
+          <FeatureCard {...item} tone={index === 1 ? "highlight" : "default"} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Why this matters now"
+        title="Children need more than coverage. They need confidence, agency, and depth."
+        description="The world our students are growing into rewards thoughtful problem solving, creativity, and sound judgment. Primary years are the right time to begin that work."
+      />
+      <div class="grid gap-6 md:grid-cols-3">
+        {nowCards.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <ThreePillarSection
+    eyebrow="The learning triangle"
+    title="What makes the model work"
+    description="Meaningful learning happens when expert educators, capable students, and a carefully designed environment work together."
+    pillars={pillars}
+  />
+
+  <section class="section-spacing bg-white">
+    <div class="container grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <div class="space-y-6">
+        <SectionIntro
+          eyebrow="Gifted learning focus"
+          title="Challenge with care for gifted and advanced learners"
+          description="We understand that advanced learners need more than faster pacing. They need complexity, autonomy, thoughtful mentorship, and a school culture that respects their intensity and imagination."
+        />
+        <div class="grid gap-4">
+          {giftedCards.map((item) => <FeatureCard {...item} />)}
+        </div>
+        <a href="/gifted-learning" class="btn-secondary">Learn how we support gifted learners</a>
+      </div>
+      <div class="hero-visual">
+        <img
+          src="/images/inquiry-projects.svg"
+          alt="Illustrated students working on inquiry projects"
+          class="h-full w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Student life"
+        title="A school day filled with ideas, making, and exploration"
+        description="Academic growth is strengthened by rich experiences that let children create, collaborate, and discover new interests."
+      />
+      <div class="grid gap-6 md:grid-cols-3">
+        {lifeCards.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing bg-white">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Family voices"
+        title="What families might say"
+        description="Placeholder testimonials can be replaced with approved family quotes once available."
+        center
+      />
+      <div class="grid gap-6 lg:grid-cols-3">
+        {testimonials.map((item) => <TestimonialCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTASection
+    title="Looking for a school where your child can think deeply and grow with confidence?"
+    description="We welcome families who want a warm, ambitious primary education with room for curiosity, creativity, and genuine academic challenge."
+    primaryCta={{ href: "/contact", label: "Schedule a conversation" }}
+    secondaryCta={{ href: "/admissions", label: "View admissions" }}
+  />
+</BaseLayout>
