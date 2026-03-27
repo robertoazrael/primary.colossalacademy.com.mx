@@ -1,0 +1,213 @@
+---
+const contactEndpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT ?? '';
+// Replace this embed URL with the exact campus Google Maps embed once the final address is confirmed.
+const campusMapEmbed = 'https://www.google.com/maps?q=Merida,+Yucatan,+Mexico&z=12&output=embed';
+---
+
+<section id="contact" class="section-spacing pt-8">
+	<div class="container grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+		<div class="feature-card feature-card-highlight overflow-hidden">
+			<div class="mb-8">
+				<p class="eyebrow">Contact</p>
+				<h2 class="mt-3 text-3xl font-extrabold text-slate-900 md:text-4xl">Start the conversation with our team</h2>
+				<p class="mt-4 max-w-2xl leading-7 text-slate-600">
+					We are happy to answer questions about our program, gifted learning support, and admissions for
+					Colossal Academy Primary.
+				</p>
+			</div>
+
+			<div
+				id="contact-success"
+				class="hidden rounded-[1.5rem] border border-emerald-300 bg-emerald-50 p-5 text-sm leading-relaxed text-emerald-800"
+				role="status"
+				aria-live="polite"
+			>
+				<p class="text-[11px] font-black uppercase tracking-[0.3em] text-emerald-700">Message sent</p>
+				<p class="mt-3">Thank you. We received your message and will get back to you soon.</p>
+			</div>
+
+			<form id="contact-form" class="mt-8 grid gap-5 md:grid-cols-2" novalidate>
+				<label class="form-field">
+					<span>Name</span>
+					<input id="contact-name" name="name" type="text" autocomplete="name" required placeholder="Your name" />
+				</label>
+
+				<label class="form-field">
+					<span>Email</span>
+					<input id="contact-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+				</label>
+
+				<label class="form-field">
+					<span>Phone</span>
+					<input id="contact-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+52 ..." />
+				</label>
+
+				<label class="form-field md:col-span-2">
+					<span>Message</span>
+					<textarea
+						id="contact-message"
+						name="message"
+						rows="6"
+						required
+						placeholder="Tell us about your child, your questions, or what you are looking for in a school."
+					></textarea>
+				</label>
+
+				<input id="contact-business" name="business" type="hidden" value="" />
+				<input id="interaction-delay" name="interaction-delay" type="hidden" value="" />
+				<input id="submission-origin" name="submission-origin" type="hidden" value="" />
+
+				<p id="contact-error" class="hidden rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-700 md:col-span-2" role="alert"></p>
+
+				<div class="md:col-span-2">
+					<button id="contact-submit" type="submit" class="btn-primary w-full sm:w-auto">
+						<span id="contact-submit-label">Send message</span>
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="feature-card overflow-hidden p-0">
+			<div class="border-b border-[color:var(--color-primary-soft)] px-6 py-6 md:px-8">
+				<p class="eyebrow">Location</p>
+				<h3 class="mt-3 text-2xl font-extrabold text-slate-900">Visit us in Merida</h3>
+				<p class="mt-4 leading-7 text-slate-600">
+					Primary Colossal Academy welcomes families in Merida, Yucatan, Mexico.
+				</p>
+			</div>
+			<div class="relative aspect-[4/5] min-h-[22rem] w-full bg-[color:var(--color-bg-highlight)] md:aspect-auto md:min-h-[32rem]">
+				<iframe
+					title="Map showing the location of Colossal Academy Primary in Merida, Yucatan, Mexico"
+					src={campusMapEmbed}
+					class="absolute inset-0 h-full w-full border-0"
+					loading="lazy"
+					referrerpolicy="no-referrer-when-downgrade"
+				></iframe>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script define:vars={{ contactEndpoint }}>
+	const form = document.getElementById('contact-form');
+	const successPanel = document.getElementById('contact-success');
+	const errorPanel = document.getElementById('contact-error');
+	const submitButton = document.getElementById('contact-submit');
+	const submitLabel = document.getElementById('contact-submit-label');
+	const interactionDelayInput = document.getElementById('interaction-delay');
+	const submissionOriginInput = document.getElementById('submission-origin');
+	const businessInput = document.getElementById('contact-business');
+	const nameInput = document.getElementById('contact-name');
+	const emailInput = document.getElementById('contact-email');
+	const phoneInput = document.getElementById('contact-phone');
+	const messageInput = document.getElementById('contact-message');
+	const formStartedAt = Date.now();
+
+	const setLoading = (isLoading) => {
+		if (!(submitButton instanceof HTMLButtonElement) || !submitLabel) return;
+		submitButton.disabled = isLoading;
+		submitLabel.textContent = isLoading ? 'Sending...' : 'Send message';
+	};
+
+	const showError = (message) => {
+		if (!errorPanel) return;
+		errorPanel.textContent = message;
+		errorPanel.classList.remove('hidden');
+	};
+
+	const clearError = () => {
+		if (!errorPanel) return;
+		errorPanel.textContent = '';
+		errorPanel.classList.add('hidden');
+	};
+
+	if (form instanceof HTMLFormElement) {
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			clearError();
+			successPanel?.classList.add('hidden');
+
+			if (!contactEndpoint) {
+				showError('The public contact form endpoint variable is missing.');
+				return;
+			}
+
+			const name = nameInput instanceof HTMLInputElement ? nameInput.value.trim() : '';
+			const email = emailInput instanceof HTMLInputElement ? emailInput.value.trim() : '';
+			const phone = phoneInput instanceof HTMLInputElement ? phoneInput.value.trim() : '';
+			const message = messageInput instanceof HTMLTextAreaElement ? messageInput.value.trim() : '';
+			const business = businessInput instanceof HTMLInputElement ? businessInput.value : '';
+
+			if (!name || !email || !phone || !message) {
+				showError('Please complete name, email, phone, and message before sending.');
+				return;
+			}
+
+			if (interactionDelayInput instanceof HTMLInputElement) {
+				interactionDelayInput.value = String(Math.max(0, Math.round((Date.now() - formStartedAt) / 1000)));
+			}
+
+			if (submissionOriginInput instanceof HTMLInputElement) {
+				submissionOriginInput.value = window.location.origin;
+			}
+
+			const payload = {
+				name,
+				email,
+				phone,
+				message,
+				business,
+				// Legacy aliases retained to preserve webhook compatibility with the inherited integration.
+				nombre: name,
+				telefono: phone,
+				mensaje: message,
+				'interaction-delay': interactionDelayInput instanceof HTMLInputElement ? interactionDelayInput.value : '0',
+				'submission-origin': submissionOriginInput instanceof HTMLInputElement ? submissionOriginInput.value : window.location.origin
+			};
+
+			setLoading(true);
+
+			try {
+				const response = await fetch(contactEndpoint, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(payload)
+				});
+
+				const responseText = await response.text();
+				let responseData = null;
+
+				if (responseText.trim()) {
+					try {
+						responseData = JSON.parse(responseText);
+					} catch (parseError) {
+						if (!response.ok) {
+							throw new Error(`Invalid form response payload: HTTP ${response.status}`);
+						}
+					}
+				}
+
+				if (!response.ok) {
+					throw new Error(`Invalid form response: HTTP ${response.status}`);
+				}
+
+				if (responseData && responseData.ok === false) {
+					throw new Error('Form webhook reported failure');
+				}
+
+				form.reset();
+				if (businessInput instanceof HTMLInputElement) businessInput.value = '';
+				if (interactionDelayInput instanceof HTMLInputElement) interactionDelayInput.value = '';
+				if (submissionOriginInput instanceof HTMLInputElement) submissionOriginInput.value = '';
+				successPanel?.classList.remove('hidden');
+			} catch (error) {
+				console.error('Error sending contact form', error);
+				showError('We could not send your message right now. Please try again in a few minutes.');
+			} finally {
+				setLoading(false);
+			}
+		});
+	}
+</script>
