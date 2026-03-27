@@ -1,7 +1,6 @@
 ---
 const contactEndpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT ?? '';
-// Replace this embed URL with the exact campus Google Maps embed once the final address is confirmed.
-const campusMapEmbed = 'https://www.google.com/maps?q=Merida,+Yucatan,+Mexico&z=12&output=embed';
+const campusMapEmbed = 'https://www.google.com/maps?q=https://maps.app.goo.gl/HXiE7hG8XzpHqrEN7&z=16&output=embed';
 ---
 
 <section id="contact" class="section-spacing pt-8">
@@ -38,8 +37,8 @@ const campusMapEmbed = 'https://www.google.com/maps?q=Merida,+Yucatan,+Mexico&z=
 				</label>
 
 				<label class="form-field">
-					<span>Phone</span>
-					<input id="contact-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+52 ..." />
+					<span>Phone (optional)</span>
+					<input id="contact-phone" name="phone" type="tel" autocomplete="tel" placeholder="+52 ..." />
 				</label>
 
 				<label class="form-field md:col-span-2">
@@ -72,7 +71,7 @@ const campusMapEmbed = 'https://www.google.com/maps?q=Merida,+Yucatan,+Mexico&z=
 				<p class="eyebrow">Location</p>
 				<h3 class="mt-3 text-2xl font-extrabold text-slate-900">Visit us in Merida</h3>
 				<p class="mt-4 leading-7 text-slate-600">
-					Primary Colossal Academy welcomes families in Merida, Yucatan, Mexico.
+					Primary Colossal Academy welcomes families at our campus in Merida, Yucatan, Mexico.
 				</p>
 			</div>
 			<div class="relative aspect-[4/5] min-h-[22rem] w-full bg-[color:var(--color-bg-highlight)] md:aspect-auto md:min-h-[32rem]">
@@ -138,8 +137,8 @@ const campusMapEmbed = 'https://www.google.com/maps?q=Merida,+Yucatan,+Mexico&z=
 			const message = messageInput instanceof HTMLTextAreaElement ? messageInput.value.trim() : '';
 			const business = businessInput instanceof HTMLInputElement ? businessInput.value : '';
 
-			if (!name || !email || !phone || !message) {
-				showError('Please complete name, email, phone, and message before sending.');
+			if (!name || !email || !message) {
+				showError('Please complete name, email, and message before sending.');
 				return;
 			}
 
