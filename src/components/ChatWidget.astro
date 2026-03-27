@@ -1,0 +1,385 @@
+---
+const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? import.meta.env.PUBLIC_CHATWEB_ENDPOINT ?? '';
+---
+
+<div class="fixed bottom-5 right-5 z-[1200] md:bottom-8 md:right-8">
+	<button
+		id="chat-toggle"
+		type="button"
+		class="group flex h-14 w-14 items-center justify-center rounded-full border border-[color:var(--color-primary-soft)] bg-white/95 text-left shadow-[var(--shadow-card)] backdrop-blur-md transition hover:-translate-y-px hover:border-[color:var(--color-accent)] hover:bg-white md:h-15 md:w-15"
+		aria-expanded="false"
+		aria-controls="chat-panel"
+		aria-label="Open chat with Colossal Academy Primary"
+	>
+		<span class="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-accent)] text-white transition group-hover:bg-[color:var(--color-accent-hover)]">
+			<svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+				<path d="M8 10h8" stroke-linecap="round"></path>
+				<path d="M8 14h5" stroke-linecap="round"></path>
+				<path d="M12 3c4.97 0 9 3.582 9 8s-4.03 8-9 8a10.6 10.6 0 0 1-3.217-.496L4 21l1.197-3.591C3.824 15.946 3 13.998 3 11c0-4.418 4.03-8 9-8Z" stroke-linejoin="round"></path>
+			</svg>
+		</span>
+		<span class="sr-only">Open chat with Colossal Academy Primary</span>
+	</button>
+
+	<section
+		id="chat-panel"
+		class="chat-panel mt-4 hidden w-[min(92vw,24rem)] flex-col overflow-hidden rounded-[2rem] border border-[color:var(--color-primary-soft)] bg-[color:rgba(255,255,255,0.96)] text-[color:var(--color-ink)] shadow-[0_24px_90px_rgba(59,52,131,0.18)] backdrop-blur-xl md:w-[24rem]"
+		role="dialog"
+		aria-modal="false"
+		aria-labelledby="chat-title"
+	>
+		<header class="border-b border-[color:var(--color-primary-soft)] bg-[linear-gradient(135deg,rgba(109,103,200,0.1),rgba(87,141,175,0.08),rgba(32,187,150,0.08))] px-5 py-4">
+			<div class="flex items-start justify-between gap-4">
+				<div>
+					<h3 id="chat-title" class="text-lg font-black tracking-tight text-[color:var(--color-primary)]">Colossal Academy Primary</h3>
+					<p class="mt-1 text-sm leading-relaxed text-[color:var(--color-muted)]">Ask about our program, admissions, and school life.</p>
+				</div>
+				<button
+					id="chat-close"
+					type="button"
+					class="rounded-full border border-[color:var(--color-primary-soft)] bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.25em] text-[color:var(--color-primary)] transition hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent-hover)]"
+					aria-label="Close chat"
+				>
+					Close
+				</button>
+			</div>
+		</header>
+
+		<div id="chat-messages" class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4" aria-live="polite"></div>
+
+		<div id="chat-error" class="hidden border-t border-rose-300/40 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert"></div>
+
+		<form id="chat-form" class="border-t border-[color:var(--color-primary-soft)] bg-[color:rgba(247,246,243,0.8)] p-4">
+			<label for="chat-input" class="mb-2 block text-[11px] font-bold uppercase tracking-[0.25em] text-[color:var(--color-secondary)]">Write your message</label>
+			<textarea
+				id="chat-input"
+				name="chatInput"
+				rows="1"
+				class="max-h-40 min-h-12 w-full resize-none rounded-2xl border border-[color:var(--color-primary-soft)] bg-white px-4 py-3 text-sm text-[color:var(--color-ink)] outline-none transition focus:border-[color:var(--color-accent)]"
+				placeholder="Type your question about Primary."
+			></textarea>
+			<div class="mt-3 flex items-center justify-between gap-3">
+				<p class="text-xs leading-relaxed text-[color:var(--color-muted)]">Your messages are stored locally so you can continue this conversation during this session.</p>
+				<button
+					id="chat-submit"
+					type="submit"
+					class="rounded-full bg-[color:var(--color-accent)] px-5 py-3 text-[11px] font-black uppercase tracking-[0.3em] text-white transition hover:bg-[color:var(--color-accent-hover)] disabled:cursor-not-allowed disabled:opacity-60"
+				>
+					<span id="chat-submit-label">Send</span>
+				</button>
+			</div>
+		</form>
+	</section>
+</div>
+
+<script define:vars={{ chatEndpoint }}>
+	const toggleButton = document.getElementById('chat-toggle');
+	const panel = document.getElementById('chat-panel');
+	const closeButton = document.getElementById('chat-close');
+	const form = document.getElementById('chat-form');
+	const input = document.getElementById('chat-input');
+	const submitButton = document.getElementById('chat-submit');
+	const submitLabel = document.getElementById('chat-submit-label');
+	const messagesContainer = document.getElementById('chat-messages');
+	const errorContainer = document.getElementById('chat-error');
+	const navbar = document.querySelector('nav');
+
+	const STORAGE_KEYS = {
+		history: 'colossal-primary-chat-history',
+		sessionId: 'colossal-primary-chat-session-id'
+	};
+
+	const initialMessage = {
+		id: 'welcome-message',
+		role: 'assistant',
+		content:
+			'Hello, I am the virtual assistant for Colossal Academy Primary. I can help with questions about our program, admissions, and school experience. How can I help you today?'
+	};
+
+	let isOpen = false;
+	let isLoading = false;
+	let history = [];
+	let sessionId = '';
+
+	const scrollToBottom = () => {
+		if (messagesContainer) {
+			messagesContainer.scrollTop = messagesContainer.scrollHeight;
+		}
+	};
+
+	const syncPanelViewport = () => {
+		if (!panel) return;
+		// Compensa el menú sticky para que el header del chat y su botón de cierre sigan visibles en desktop y mobile.
+		const stickyOffset = navbar instanceof HTMLElement ? Math.ceil(navbar.getBoundingClientRect().bottom) : 72;
+		panel.style.setProperty('--chat-safe-top', `${Math.max(stickyOffset, 72)}px`);
+	};
+
+	const autoResize = () => {
+		if (!(input instanceof HTMLTextAreaElement)) return;
+		input.style.height = 'auto';
+		input.style.height = `${Math.min(input.scrollHeight, 160)}px`;
+	};
+
+	const setError = (message) => {
+		if (!errorContainer) return;
+		if (!message) {
+			errorContainer.textContent = '';
+			errorContainer.classList.add('hidden');
+			return;
+		}
+		errorContainer.textContent = message;
+		errorContainer.classList.remove('hidden');
+	};
+
+	const setLoading = (nextValue) => {
+		isLoading = nextValue;
+		if (submitButton instanceof HTMLButtonElement) {
+			submitButton.disabled = nextValue;
+		}
+		if (input instanceof HTMLTextAreaElement) {
+			input.disabled = nextValue;
+		}
+		if (submitLabel) {
+			submitLabel.textContent = nextValue ? 'Sending...' : 'Send';
+		}
+	};
+
+	const persistHistory = () => {
+		localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history));
+	};
+
+	const getSessionId = () => {
+		const storedSessionId = localStorage.getItem(STORAGE_KEYS.sessionId);
+		if (storedSessionId) return storedSessionId;
+		const nextSessionId = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `session-${Date.now()}`;
+		localStorage.setItem(STORAGE_KEYS.sessionId, nextSessionId);
+		return nextSessionId;
+	};
+
+	const renderMessages = () => {
+		if (!messagesContainer) return;
+		messagesContainer.innerHTML = '';
+		history.forEach((message) => {
+			const wrapper = document.createElement('div');
+			wrapper.className = `flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+			const bubble = document.createElement('article');
+			bubble.className =
+				message.role === 'user'
+					? 'max-w-[85%] rounded-[1.4rem] rounded-br-md bg-[color:var(--color-accent)] px-4 py-3 text-sm leading-relaxed text-white'
+					: 'max-w-[85%] rounded-[1.4rem] rounded-bl-md border border-[color:var(--color-primary-soft)] bg-white px-4 py-3 text-sm leading-relaxed text-[color:var(--color-ink)]';
+
+			const label = document.createElement('p');
+			label.className = `mb-2 text-[10px] font-black uppercase tracking-[0.25em] ${message.role === 'user' ? 'text-white/75' : 'text-[color:var(--color-primary)]'}`;
+			label.textContent = message.role === 'user' ? 'You' : 'Primary';
+
+			const text = document.createElement('p');
+			text.className = 'whitespace-pre-wrap';
+			text.textContent = message.content;
+
+			bubble.append(label, text);
+			wrapper.appendChild(bubble);
+			messagesContainer.appendChild(wrapper);
+		});
+		scrollToBottom();
+	};
+
+	const renderTyping = () => {
+		if (!messagesContainer || document.getElementById('chat-typing')) return;
+		const wrapper = document.createElement('div');
+		wrapper.id = 'chat-typing';
+		wrapper.className = 'flex justify-start';
+		wrapper.innerHTML = `
+			<div class="max-w-[85%] rounded-[1.4rem] rounded-bl-md border border-[color:var(--color-primary-soft)] bg-white px-4 py-3 text-[color:var(--color-ink)] shadow-[var(--shadow-card)]">
+				<p class="mb-2 text-[10px] font-black uppercase tracking-[0.25em] text-[color:var(--color-primary)]">Primary</p>
+				<div class="inline-flex items-center rounded-full border border-[color:var(--color-primary-soft)] bg-[color:var(--color-bg-soft)] px-3 py-2" aria-label="Colossal Academy Primary is typing" aria-live="polite">
+					<!-- Indicador temporal de escritura: no debe persistir como mensaje real en el historial del chat. -->
+					<span class="flex items-center gap-2" aria-hidden="true">
+					<span class="chat-dot"></span>
+					<span class="chat-dot"></span>
+					<span class="chat-dot"></span>
+					</span>
+				</div>
+			</div>
+		`;
+		messagesContainer.appendChild(wrapper);
+		scrollToBottom();
+	};
+
+	const clearTyping = () => {
+		document.getElementById('chat-typing')?.remove();
+	};
+
+	const ensureHistory = () => {
+		const storedHistory = localStorage.getItem(STORAGE_KEYS.history);
+		if (!storedHistory) {
+			history = [initialMessage];
+			persistHistory();
+			return;
+		}
+
+		try {
+			const parsedHistory = JSON.parse(storedHistory);
+			history = Array.isArray(parsedHistory) && parsedHistory.length > 0 ? parsedHistory : [initialMessage];
+		} catch {
+			history = [initialMessage];
+		}
+		persistHistory();
+	};
+
+	const togglePanel = (nextOpen) => {
+		isOpen = nextOpen;
+		if (!panel || !(toggleButton instanceof HTMLButtonElement)) return;
+		panel.classList.toggle('hidden', !nextOpen);
+		// Fuerza layout flex solo cuando el chat está abierto; sin esto el área de mensajes pierde scroll interno.
+		panel.classList.toggle('flex', nextOpen);
+		toggleButton.setAttribute('aria-expanded', String(nextOpen));
+		if (nextOpen) {
+			scrollToBottom();
+			input?.focus();
+		}
+	};
+
+	ensureHistory();
+	sessionId = getSessionId();
+	syncPanelViewport();
+	renderMessages();
+
+	toggleButton?.addEventListener('click', () => {
+		togglePanel(!isOpen);
+	});
+
+	closeButton?.addEventListener('click', () => {
+		togglePanel(false);
+	});
+
+	if (input instanceof HTMLTextAreaElement) {
+		input.addEventListener('input', () => {
+			autoResize();
+			if (setError) setError('');
+		});
+		input.addEventListener('keydown', (event) => {
+			if (event.key === 'Enter' && !event.shiftKey) {
+				event.preventDefault();
+				if (!isLoading) {
+					form?.requestSubmit();
+				}
+			}
+		});
+		autoResize();
+	}
+
+	// Recalcula la altura útil del panel si cambia el viewport; no debe alterar el flujo normal de apertura o cierre.
+	window.addEventListener('resize', syncPanelViewport);
+
+	if (form instanceof HTMLFormElement && input instanceof HTMLTextAreaElement) {
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			setError('');
+
+			if (!chatEndpoint) {
+				setError('The public chat endpoint variable is missing.');
+				return;
+			}
+
+			const chatInput = input.value.trim();
+			if (!chatInput || isLoading) return;
+
+			history.push({
+				id: `user-${Date.now()}`,
+				role: 'user',
+				content: chatInput
+			});
+			persistHistory();
+			renderMessages();
+
+			input.value = '';
+			autoResize();
+			setLoading(true);
+			renderTyping();
+
+			try {
+				const response = await fetch(chatEndpoint, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						chatInput,
+						sessionId
+					})
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP ${response.status}`);
+				}
+
+				const data = await response.json();
+				const reply = typeof data?.reply === 'string' ? data.reply.trim() : '';
+
+				if (!reply) {
+					throw new Error('Missing reply field');
+				}
+
+				clearTyping();
+				history.push({
+					id: `assistant-${Date.now()}`,
+					role: 'assistant',
+					content: reply
+				});
+				persistHistory();
+				renderMessages();
+			} catch (error) {
+				console.error('Error sending chat message', error);
+				setError('We could not connect to the Colossal Academy Primary chat right now. Please try again in a few minutes.');
+			} finally {
+				clearTyping();
+				setLoading(false);
+			}
+		});
+	}
+</script>
+
+<style>
+	.chat-panel {
+		/* Ajuste de altura máxima del chat para que el header no quede oculto bajo el menú sticky. */
+		max-height: calc(100dvh - var(--chat-safe-top, 72px) - 1.25rem);
+	}
+
+	:global(.chat-dot) {
+		display: inline-block;
+		width: 0.65rem;
+		height: 0.65rem;
+		border-radius: 9999px;
+		background: var(--color-accent);
+		box-shadow: 0 0 0.8rem rgba(32, 187, 150, 0.45);
+		opacity: 0.28;
+		transform: translateY(0) scale(0.88);
+		animation: chat-bounce 1s infinite ease-in-out;
+		flex-shrink: 0;
+		will-change: transform, opacity;
+	}
+
+	:global(.chat-dot:nth-child(1)) {
+		animation-delay: 0s;
+	}
+
+	:global(.chat-dot:nth-child(2)) {
+		animation-delay: 0.18s;
+	}
+
+	:global(.chat-dot:nth-child(3)) {
+		animation-delay: 0.36s;
+	}
+
+	@keyframes chat-bounce {
+		0%, 80%, 100% {
+			transform: translateY(0) scale(0.88);
+			opacity: 0.28;
+		}
+		40% {
+			transform: translateY(-0.38rem) scale(1.08);
+			opacity: 1;
+		}
+	}
+</style>
