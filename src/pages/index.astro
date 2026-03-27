@@ -6,6 +6,13 @@ import Hero from "../components/Hero.astro";
 import SectionIntro from "../components/SectionIntro.astro";
 import TestimonialCard from "../components/TestimonialCard.astro";
 import ThreePillarSection from "../components/ThreePillarSection.astro";
+import hallPhoto from "../assets/school/primary/colossal-primary-hall.png";
+import yardPhoto from "../assets/school/primary/colossal-primary-yard.png";
+import scienceClassroomPhoto from "../assets/school/primary/colossal-primary-science-classroom.png";
+import artsClassroomPhoto from "../assets/school/primary/colossal-primary-arts-classroom.png";
+import soccerFieldPhoto from "../assets/school/primary/colossal-primary-soccer-field.png";
+import principalOfficePhoto from "../assets/school/primary/colossal-primary-principaloffice.png";
+import swimmingPoolPhoto from "../assets/school/primary/colossal-primary--swiming-pool.png";
 
 const choicePoints = [
   {
@@ -153,6 +160,29 @@ const testimonials = [
     role: "Prospective family feedback"
   }
 ];
+
+const galleryPhotos = [
+  {
+    image: hallPhoto,
+    alt: "Entrance hall at Colossal Academy Primary",
+    title: "Welcoming spaces"
+  },
+  {
+    image: artsClassroomPhoto,
+    alt: "Arts classroom at Colossal Academy Primary",
+    title: "Creative classrooms"
+  },
+  {
+    image: soccerFieldPhoto,
+    alt: "Soccer field at Colossal Academy Primary",
+    title: "Outdoor play"
+  },
+  {
+    image: principalOfficePhoto,
+    alt: "Principal office at Colossal Academy Primary",
+    title: "Thoughtful leadership"
+  }
+];
 ---
 
 <BaseLayout
@@ -167,8 +197,8 @@ const testimonials = [
     description="Primary Colossal Academy offers a warm, intellectually rich learning environment for children who thrive on curiosity, depth, creativity, and meaningful academic challenge."
     primaryCta={{ href: "/admissions", label: "Explore admissions" }}
     secondaryCta={{ href: "/approach", label: "See our approach" }}
-    imageSrc="/images/hero-learning.svg"
-    imageAlt="Illustrated classroom scene with children learning together"
+    imageSrc={yardPhoto.src}
+    imageAlt="Students enjoying the yard at Colossal Academy Primary"
   />
 
   <section class="section-spacing pt-8">
@@ -233,12 +263,24 @@ const testimonials = [
         <a href="/gifted-learning" class="btn-secondary">Learn how we support gifted learners</a>
       </div>
       <div class="hero-visual">
-        <img
-          src="/images/inquiry-projects.svg"
-          alt="Illustrated students working on inquiry projects"
-          class="h-full w-full object-cover"
-          loading="lazy"
-        />
+        <div class="relative h-full min-h-[24rem]">
+          <img
+            src={scienceClassroomPhoto.src}
+            alt="Science classroom at Colossal Academy Primary"
+            class="h-full w-full object-cover"
+            loading="lazy"
+            width={scienceClassroomPhoto.width}
+            height={scienceClassroomPhoto.height}
+          />
+          <div class="absolute bottom-4 left-4 hidden w-28 rounded-[1.5rem] border border-white/60 bg-white/90 p-3 shadow-[var(--shadow-card)] backdrop-blur-sm md:block">
+            <img
+              src="/images/inquiry-projects.svg"
+              alt=""
+              class="h-auto w-full"
+              loading="lazy"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -252,6 +294,87 @@ const testimonials = [
       />
       <div class="grid gap-6 md:grid-cols-3">
         {lifeCards.map((item) => <FeatureCard {...item} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing bg-white">
+    <div class="container grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <div class="space-y-6">
+        <SectionIntro
+          eyebrow="Inside the campus"
+          title="Real spaces that support warmth, focus, and discovery"
+          description="From shared gathering areas to hands-on rooms for exploration, the campus is designed to feel welcoming, calm, and full of possibility."
+        />
+        <p class="max-w-2xl leading-7 text-slate-600">
+          Real photographs now carry more of the story here, while the graphic language of the site remains as a light supporting layer.
+        </p>
+        <a href="/contact" class="btn-secondary">Plan a visit</a>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <article class="hero-visual sm:col-span-2">
+          <img
+            src={hallPhoto.src}
+            alt="Main hall at Colossal Academy Primary"
+            class="h-full w-full object-cover"
+            loading="lazy"
+            width={hallPhoto.width}
+            height={hallPhoto.height}
+          />
+        </article>
+        <article class="hero-visual">
+          <img
+            src={artsClassroomPhoto.src}
+            alt="Arts classroom at Colossal Academy Primary"
+            class="h-full w-full object-cover"
+            loading="lazy"
+            width={artsClassroomPhoto.width}
+            height={artsClassroomPhoto.height}
+          />
+        </article>
+        <article class="hero-visual relative">
+          <img
+            src={swimmingPoolPhoto.src}
+            alt="Swimming pool at Colossal Academy Primary"
+            class="h-full w-full object-cover"
+            loading="lazy"
+            width={swimmingPoolPhoto.width}
+            height={swimmingPoolPhoto.height}
+          />
+          <div class="absolute right-4 top-4 hidden w-24 rounded-[1.25rem] bg-white/88 p-2 shadow-[var(--shadow-card)] md:block">
+            <img src="/images/hero-learning.svg" alt="" class="h-auto w-full" loading="lazy" />
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-spacing">
+    <div class="container space-y-10">
+      <SectionIntro
+        eyebrow="Photo gallery"
+        title="A quick look at daily life on campus"
+        description="This gallery is intentionally compact for now and ready to grow as more approved school photography becomes available."
+      />
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {galleryPhotos.map((item, index) => (
+          <figure class:list={[
+            "hero-visual overflow-hidden",
+            index === 0 && "md:col-span-2 xl:col-span-2"
+          ]}>
+            <img
+              src={item.image.src}
+              alt={item.alt}
+              class="h-full w-full object-cover"
+              loading="lazy"
+              width={item.image.width}
+              height={item.image.height}
+            />
+            <figcaption class="border-t border-[color:var(--color-primary-soft)] bg-white px-5 py-4 text-sm font-semibold text-slate-700">
+              {item.title}
+            </figcaption>
+          </figure>
+        ))}
       </div>
     </div>
   </section>
