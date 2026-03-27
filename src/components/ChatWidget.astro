@@ -1,5 +1,5 @@
 ---
-const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
+const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? import.meta.env.PUBLIC_CHATWEB_ENDPOINT ?? '';
 ---
 
 <div class="fixed bottom-5 right-5 z-[1200] md:bottom-8 md:right-8">
@@ -9,7 +9,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 		class="group flex h-14 w-14 items-center justify-center rounded-full border border-[color:var(--color-primary-soft)] bg-white/95 text-left shadow-[var(--shadow-card)] backdrop-blur-md transition hover:-translate-y-px hover:border-[color:var(--color-accent)] hover:bg-white md:h-15 md:w-15"
 		aria-expanded="false"
 		aria-controls="chat-panel"
-		aria-label="Abrir chat con Colossal Academy Primary"
+		aria-label="Open chat with Colossal Academy Primary"
 	>
 		<span class="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-accent)] text-white transition group-hover:bg-[color:var(--color-accent-hover)]">
 			<svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
@@ -18,7 +18,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 				<path d="M12 3c4.97 0 9 3.582 9 8s-4.03 8-9 8a10.6 10.6 0 0 1-3.217-.496L4 21l1.197-3.591C3.824 15.946 3 13.998 3 11c0-4.418 4.03-8 9-8Z" stroke-linejoin="round"></path>
 			</svg>
 		</span>
-		<span class="sr-only">Abrir chat con Colossal Academy Primary</span>
+		<span class="sr-only">Open chat with Colossal Academy Primary</span>
 	</button>
 
 	<section
@@ -32,15 +32,15 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 			<div class="flex items-start justify-between gap-4">
 				<div>
 					<h3 id="chat-title" class="text-lg font-black tracking-tight text-[color:var(--color-primary)]">Colossal Academy Primary</h3>
-					<p class="mt-1 text-sm leading-relaxed text-[color:var(--color-muted)]">Haz preguntas sobre nuestro programa, admisiones y vida escolar.</p>
+					<p class="mt-1 text-sm leading-relaxed text-[color:var(--color-muted)]">Ask about our program, admissions, and school life.</p>
 				</div>
 				<button
 					id="chat-close"
 					type="button"
 					class="rounded-full border border-[color:var(--color-primary-soft)] bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.25em] text-[color:var(--color-primary)] transition hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent-hover)]"
-					aria-label="Cerrar chat"
+					aria-label="Close chat"
 				>
-					Cerrar
+					Close
 				</button>
 			</div>
 		</header>
@@ -50,22 +50,22 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 		<div id="chat-error" class="hidden border-t border-rose-300/40 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert"></div>
 
 		<form id="chat-form" class="border-t border-[color:var(--color-primary-soft)] bg-[color:rgba(247,246,243,0.8)] p-4">
-			<label for="chat-input" class="mb-2 block text-[11px] font-bold uppercase tracking-[0.25em] text-[color:var(--color-secondary)]">Escribe tu mensaje</label>
+			<label for="chat-input" class="mb-2 block text-[11px] font-bold uppercase tracking-[0.25em] text-[color:var(--color-secondary)]">Write your message</label>
 			<textarea
 				id="chat-input"
 				name="chatInput"
 				rows="1"
 				class="max-h-40 min-h-12 w-full resize-none rounded-2xl border border-[color:var(--color-primary-soft)] bg-white px-4 py-3 text-sm text-[color:var(--color-ink)] outline-none transition focus:border-[color:var(--color-accent)]"
-				placeholder="Escribe tu pregunta sobre Primary."
+				placeholder="Type your question about Primary."
 			></textarea>
 			<div class="mt-3 flex items-center justify-between gap-3">
-				<p class="text-xs leading-relaxed text-[color:var(--color-muted)]">Tus mensajes se guardan localmente para continuar la conversación en esta sesión.</p>
+				<p class="text-xs leading-relaxed text-[color:var(--color-muted)]">Your messages are stored locally so you can continue this conversation during this session.</p>
 				<button
 					id="chat-submit"
 					type="submit"
 					class="rounded-full bg-[color:var(--color-accent)] px-5 py-3 text-[11px] font-black uppercase tracking-[0.3em] text-white transition hover:bg-[color:var(--color-accent-hover)] disabled:cursor-not-allowed disabled:opacity-60"
 				>
-					<span id="chat-submit-label">Enviar</span>
+					<span id="chat-submit-label">Send</span>
 				</button>
 			</div>
 		</form>
@@ -93,7 +93,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 		id: 'welcome-message',
 		role: 'assistant',
 		content:
-			'Hola, soy el asistente virtual de Colossal Academy Primary. Puedo ayudarte con preguntas sobre nuestro programa, admisiones y experiencia escolar. ¿En qué te ayudo hoy?'
+			'Hello, I am the virtual assistant for Colossal Academy Primary. I can help with questions about our program, admissions, and school experience. How can I help you today?'
 	};
 
 	let isOpen = false;
@@ -140,7 +140,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 			input.disabled = nextValue;
 		}
 		if (submitLabel) {
-			submitLabel.textContent = nextValue ? 'Enviando...' : 'Enviar';
+			submitLabel.textContent = nextValue ? 'Sending...' : 'Send';
 		}
 	};
 
@@ -171,7 +171,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 
 			const label = document.createElement('p');
 			label.className = `mb-2 text-[10px] font-black uppercase tracking-[0.25em] ${message.role === 'user' ? 'text-white/75' : 'text-[color:var(--color-primary)]'}`;
-			label.textContent = message.role === 'user' ? 'Tú' : 'Primary';
+			label.textContent = message.role === 'user' ? 'You' : 'Primary';
 
 			const text = document.createElement('p');
 			text.className = 'whitespace-pre-wrap';
@@ -192,7 +192,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 		wrapper.innerHTML = `
 			<div class="max-w-[85%] rounded-[1.4rem] rounded-bl-md border border-[color:var(--color-primary-soft)] bg-white px-4 py-3 text-[color:var(--color-ink)] shadow-[var(--shadow-card)]">
 				<p class="mb-2 text-[10px] font-black uppercase tracking-[0.25em] text-[color:var(--color-primary)]">Primary</p>
-				<div class="inline-flex items-center rounded-full border border-[color:var(--color-primary-soft)] bg-[color:var(--color-bg-soft)] px-3 py-2" aria-label="Colossal Academy Primary está escribiendo" aria-live="polite">
+				<div class="inline-flex items-center rounded-full border border-[color:var(--color-primary-soft)] bg-[color:var(--color-bg-soft)] px-3 py-2" aria-label="Colossal Academy Primary is typing" aria-live="polite">
 					<!-- Indicador temporal de escritura: no debe persistir como mensaje real en el historial del chat. -->
 					<span class="flex items-center gap-2" aria-hidden="true">
 					<span class="chat-dot"></span>
@@ -278,7 +278,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 			setError('');
 
 			if (!chatEndpoint) {
-				setError('Falta configurar la variable pública del endpoint del chat.');
+				setError('The public chat endpoint variable is missing.');
 				return;
 			}
 
@@ -331,7 +331,7 @@ const chatEndpoint = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
 				renderMessages();
 			} catch (error) {
 				console.error('Error sending chat message', error);
-				setError('No pudimos conectar con el chat de Colossal Academy Primary en este momento. Intenta de nuevo en unos minutos.');
+				setError('We could not connect to the Colossal Academy Primary chat right now. Please try again in a few minutes.');
 			} finally {
 				clearTyping();
 				setLoading(false);
