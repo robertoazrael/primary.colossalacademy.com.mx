@@ -8,6 +8,7 @@ import TestimonialCard from "../components/TestimonialCard.astro";
 import ThreePillarSection from "../components/ThreePillarSection.astro";
 import hallPhoto from "../assets/school/primary/colossal-primary-hall.png";
 import yardPhoto from "../assets/school/primary/colossal-primary-yard.png";
+import machinePhoto from "../assets/school/primary/colossal-primary-grace-machine.jpg";
 import scienceClassroomPhoto from "../assets/school/primary/colossal-primary-science-classroom.png";
 import artsClassroomPhoto from "../assets/school/primary/colossal-primary-arts-classroom.png";
 import soccerFieldPhoto from "../assets/school/primary/colossal-primary-soccer-field.png";
@@ -34,19 +35,24 @@ const choicePoints = [
 
 const approachCards = [
   {
-    title: "Inquiry with structure",
+    title: "Inquiry, grounded in strong foundations",
     description:
-      "Teachers frame rigorous questions, standards, and goals, then invite students to investigate, discuss, and build meaning."
+      "Teachers guide students through meaningful questions and interdisciplinary units, while ensuring deep understanding in mathematics, science, and language."
   },
   {
-    title: "Voice and ownership",
+    title: "Depth, challenge, and differentiation",
     description:
-      "Students make choices about topics, formats, and pathways, learning how to plan, reflect, and take responsibility for their work."
+      "Learning is designed to increase complexity, independence, and depth—so advanced learners are consistently challenged and supported as they grow."
   },
   {
-    title: "Guided differentiation",
+    title: "Future-ready skills, taught through real life",
     description:
-      "Expert educators notice readiness levels quickly and adjust support, pace, and complexity so every child can grow."
+      "Students develop real-world capabilities through entrepreneurship, financial literacy, cooking, gardening, engineering, artistic expression, and community service—building expression through the arts and sport"
+  },
+  {
+    title: "Self Expression through Art and Sport",
+    description:
+      "Students build confidence and identity through music, visual arts, performance, and sport—expressing ideas, emotions, and discipline through creation and challenge."
   }
 ];
 
@@ -192,20 +198,20 @@ const galleryPhotos = [
 >
   <Hero
     eyebrow="Primary Colossal Academy in Merida"
-    title="A primary school where bright children are"
-    highlight="known, challenged, and inspired."
-    description="Primary Colossal Academy offers a warm, intellectually rich learning environment for children who thrive on curiosity, depth, creativity, and meaningful academic challenge."
+    title="A primary school for capable, curious, and advanced learners"
+    highlight=" where learning is rigorous, applied, and deeply personal."
+    description="Designed for children who need depth, challenge, and expert guidance to engage in meaningful, real-world learning."
     primaryCta={{ href: "/admissions", label: "Explore admissions" }}
     secondaryCta={{ href: "/approach", label: "See our approach" }}
-    imageSrc={yardPhoto.src}
-    imageAlt="Students enjoying the yard at Colossal Academy Primary"
+    imageSrc={machinePhoto.src}
+    imageAlt="Girl playing with a machine at Colossal Academy Primary"
   />
 
   <section class="section-spacing pt-8">
     <div class="container space-y-10">
       <SectionIntro
         eyebrow="Why families choose us"
-        title="A school built for thoughtful growth"
+        title="Intellectually serious. Deeply Human. Future-ready."
         description="Families come to Primary Colossal Academy for personal attention, serious learning, and an environment where advanced learners do not have to hide their curiosity."
       />
       <div class="grid gap-6 md:grid-cols-3">
@@ -218,10 +224,10 @@ const galleryPhotos = [
     <div class="container space-y-10">
       <SectionIntro
         eyebrow="Educational approach"
-        title="Learning is active, guided, and deeply personal"
-        description="Inspired by student agency, our model gives children real ownership while keeping expert teaching, strong standards, and caring mentorship at the center."
+        title="An IB-inspired education designed for advanced learners"
+        description="We combine the International Baccalaureate Primary Years Programme with intentional challenge, strong academic foundations, and expert teaching—so advanced learners can think deeply, create meaningfully, and grow with purpose."
       />
-      <div class="grid gap-6 md:grid-cols-3">
+      <div class="grid gap-6 md:grid-cols-2">
         {approachCards.map((item, index) => (
           <FeatureCard {...item} tone={index === 1 ? "highlight" : "default"} />
         ))}
