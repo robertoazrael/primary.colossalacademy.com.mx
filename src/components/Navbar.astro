@@ -17,7 +17,12 @@ const isActive = (href) => currentPath === href;
 <header class="site-header">
   <div class="container flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between">
     <a href="/" class="brand-mark" aria-label="Primary Colossal Academy home">
-      <span class="brand-mark__icon" aria-hidden="true"></span>
+      <img
+        src="/favicon.svg"
+        alt="Colossal Academy logo"
+        class="brand-mark__logo"
+        loading="eager"
+      />
       <span>
         <span class="brand-mark__title">Colossal Academy</span>
         <span class="brand-mark__subtitle">Primary Campus</span>

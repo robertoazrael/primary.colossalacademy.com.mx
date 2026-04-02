@@ -78,6 +78,12 @@ img {
   box-shadow: 0 12px 24px rgba(87, 141, 175, 0.25);
 }
 
+.brand-mark__logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: contain;
+}
+
 .brand-mark__title {
   display: block;
   font-family: "New Tegomin", Georgia, "Times New Roman", serif;
