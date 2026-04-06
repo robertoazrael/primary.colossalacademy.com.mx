@@ -8,9 +8,17 @@ interface Props {
   title: string;
   description: string;
   currentPath?: string;
+  showSiteChrome?: boolean;
+  showChat?: boolean;
 }
 
-const { title, description, currentPath = "/" } = Astro.props;
+const {
+  title,
+  description,
+  currentPath = "/",
+  showSiteChrome = true,
+  showChat = true,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -27,11 +35,11 @@ const { title, description, currentPath = "/" } = Astro.props;
     <link rel="manifest" href="/site.webmanifest" />
   </head>
   <body>
-    <Navbar currentPath={currentPath} />
+    {showSiteChrome ? <Navbar currentPath={currentPath} /> : null}
     <main>
       <slot />
     </main>
-    <Footer />
-    <ChatWidget />
+    {showSiteChrome ? <Footer /> : null}
+    {showChat ? <ChatWidget /> : null}
   </body>
 </html>
