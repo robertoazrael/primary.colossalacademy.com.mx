@@ -1,0 +1,594 @@
+---
+export const prerender = false;
+import Layout from "../../layouts/MainLayout.astro";
+import { createSupabaseServerClient } from "../../lib/supabase/server";
+import { getActiveMembership } from "../../lib/auth/authorization";
+import { getPanelMessages } from "../../lib/panel/data";
+import { getClientConfig } from "../../lib/client-config";
+import { panelConfig } from "../../config/panel";
+
+let authenticated = false;
+
+const supabaseAuth = createSupabaseServerClient(Astro.cookies);
+
+const {
+  data: { user },
+  error: userError,
+} = await supabaseAuth.auth.getUser();
+
+let membership = null;
+if (user && !userError) {
+  membership = await getActiveMembership({
+    userId: user.id,
+    siteSlug: panelConfig.siteSlug,
+  });
+
+  if (membership) {
+    authenticated = true;
+  }
+}
+
+let clientConfig = null;
+let webMessages = [];
+let whatsMessages = [];
+
+if (authenticated) {
+  clientConfig = await getClientConfig(panelConfig.siteSlug);
+
+  if (clientConfig?.is_active) {
+    const result = await getPanelMessages({
+      tableWeb: clientConfig.memory_web,
+      tableWhats: clientConfig.memory_whats,
+    });
+
+    webMessages = result.webMessages;
+    whatsMessages = result.whatsMessages;
+  }
+}
+
+const labels = [];
+for (let i = 6; i >= 0; i--) {
+  const d = new Date();
+  d.setDate(d.getDate() - i);
+  labels.push(
+    d.toLocaleDateString("es-MX", {
+      weekday: "short",
+      day: "numeric",
+      timeZone: panelConfig.timezone,
+    })
+  );
+}
+
+const cleanJS = (str) => {
+  if (!str) return "";
+  return str
+    .toString()
+    .replace(/\r?\n|\r/g, " ")
+    .replace(/'/g, "´")
+    .replace(/"/g, "´")
+    .trim();
+};
+
+const processStats = (msgs) => {
+  const stats = {};
+  labels.forEach((l) => (stats[l] = 0));
+  msgs.forEach((m) => {
+    const l = new Date(m.created_at).toLocaleDateString("es-MX", {
+      weekday: "short",
+      day: "numeric",
+      timeZone: panelConfig.timezone,
+    });
+    if (Object.prototype.hasOwnProperty.call(stats, l)) stats[l]++;
+  });
+  return labels.map((l) => ({ label: l, count: stats[l] }));
+};
+
+const webChart = processStats(webMessages);
+const whatsChart = processStats(whatsMessages);
+const maxVal = Math.max(
+  ...webChart.map((d) => d.count),
+  ...whatsChart.map((d) => d.count),
+  1
+);
+---
+
+<Layout pageTitle="Mentemática Panel">
+  <div class="min-h-screen bg-slate-950 text-slate-100 p-3 md:p-8 font-sans" x-data="panelMetricsState()">
+    <div x-show="toastOpen" x-transition x-cloak class="fixed right-3 top-3 z-[60]">
+      <div
+        class="px-4 py-3 rounded-xl border text-[11px] font-black uppercase tracking-wide shadow-xl"
+        :class="toastTone === 'error'
+          ? 'bg-red-500/15 border-red-400/40 text-red-300'
+          : 'bg-cyan-500/15 border-cyan-400/40 text-cyan-200'"
+      >
+        <span x-text="toastMessage"></span>
+      </div>
+    </div>
+
+    <div x-show="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" x-cloak>
+      <div @click.away="modalOpen = false" class="bg-slate-900 p-6 rounded-3xl border border-slate-800 max-w-lg w-full shadow-2xl">
+        <h3 class="text-cyan-300 font-black text-xs uppercase mb-2" x-text="mTitle"></h3>
+        <p class="text-slate-500 text-[10px] mb-4 font-mono" x-text="mDate"></p>
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 max-h-80 overflow-y-auto">
+          <p class="text-slate-200 text-sm leading-relaxed whitespace-pre-wrap" x-text="mText"></p>
+        </div>
+        <button
+          @click="modalOpen = false"
+          class="w-full mt-6 bg-slate-800 hover:bg-cyan-600 hover:text-white py-4 rounded-xl font-bold text-xs uppercase transition-colors"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    {!authenticated ? (
+      <div class="flex items-center justify-center py-20 px-4">
+        <div class="bg-slate-900 p-8 rounded-3xl shadow-2xl w-full max-w-md border border-slate-800">
+          <div class="mb-6 text-center">
+            <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-300 font-black">Mentemática</p>
+            <h2 class="text-2xl font-black text-white mt-2 tracking-tight">Acceso al panel</h2>
+            <p class="text-slate-400 text-sm mt-2">Ingresa con tu cuenta autorizada.</p>
+          </div>
+
+          <form @submit.prevent="submitLogin" class="space-y-4">
+            <div x-show="loginError" x-cloak class="bg-red-500/10 border border-red-500/50 p-4 rounded-xl mb-4">
+              <p class="text-red-400 text-xs font-bold text-center uppercase tracking-tight" x-text="loginError"></p>
+            </div>
+
+            <input
+              x-model="loginEmail"
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+
+            <input
+              x-model="loginPassword"
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              required
+              class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+
+            <button
+              type="submit"
+              :disabled="loginLoading"
+              :class="loginLoading ? 'opacity-70 cursor-wait' : ''"
+              class="w-full bg-cyan-600 hover:bg-cyan-500 py-4 rounded-xl font-bold shadow-lg uppercase text-xs text-white transition-colors"
+            >
+              <span x-text="loginLoading ? 'Entrando...' : 'Entrar'"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    ) : (
+      <div class="max-w-6xl mx-auto space-y-6 pb-20">
+        <header class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 px-2">
+          <div>
+            <p class="text-[10px] uppercase tracking-[0.25em] text-cyan-300 font-black">Mentemática</p>
+            <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">{panelConfig.panelTitle}</h1>
+            <p class="text-slate-400 text-sm mt-1">
+              Cliente: <span class="text-slate-200 font-semibold">{panelConfig.siteSlug}</span>
+              {user?.email ? <> · Usuario: <span class="text-slate-200 font-semibold">{user.email}</span></> : null}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <button
+              x-show="filterDay || searchQuery"
+              x-transition
+              @click="clearFilters()"
+              class="px-4 py-2 bg-red-600/20 text-red-400 border border-red-500/30 rounded-xl text-[10px] font-black uppercase hover:bg-red-600 hover:text-white transition-all"
+            >
+              ✕ Limpiar filtros
+            </button>
+
+            <button
+              type="button"
+              @click="sendReportEmail()"
+              :disabled="reportLoading"
+              :class="reportLoading ? 'opacity-70 cursor-wait border-cyan-400 text-cyan-300' : ''"
+              class="h-10 w-10 md:h-11 md:w-11 grid place-items-center bg-slate-900 rounded-xl text-slate-300 border border-slate-800 hover:border-cyan-400 hover:text-cyan-300 transition-all"
+              aria-label="Enviar reporte por email"
+              title="Enviar reporte por email"
+            >
+              <svg x-show="!reportLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                <path d="M1.5 8.67v8.58a2.25 2.25 0 0 0 2.25 2.25h16.5a2.25 2.25 0 0 0 2.25-2.25V8.67l-8.928 5.493a3.75 3.75 0 0 1-3.144 0L1.5 8.67Z"/>
+                <path d="M22.5 6.908v-.158A2.25 2.25 0 0 0 20.25 4.5H3.75A2.25 2.25 0 0 0 1.5 6.75v.158l9.714 5.978a2.25 2.25 0 0 0 1.572 0L22.5 6.908Z"/>
+              </svg>
+              <svg x-show="reportLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5 animate-spin">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="2"></circle>
+                <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              @click="downloadCsv7d()"
+              class="h-10 w-10 md:h-11 md:w-11 grid place-items-center bg-slate-900 rounded-xl text-slate-300 border border-slate-800 hover:border-emerald-400 hover:text-emerald-300 transition-all"
+              aria-label="Descargar CSV"
+              title="Descargar CSV 7 días"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                <path d="M12 16.5a.75.75 0 0 0 .53-.22l3.75-3.75a.75.75 0 1 0-1.06-1.06l-2.47 2.47V4.5a.75.75 0 0 0-1.5 0v9.44l-2.47-2.47a.75.75 0 1 0-1.06 1.06l3.75 3.75A.75.75 0 0 0 12 16.5Z"/>
+                <path d="M3.75 15a.75.75 0 0 0-.75.75v2.5A2.75 2.75 0 0 0 5.75 21h12.5A2.75 2.75 0 0 0 21 18.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H5.75c-.69 0-1.25-.56-1.25-1.25v-2.5a.75.75 0 0 0-.75-.75Z"/>
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              @click="logout()"
+              class="h-10 w-10 md:h-11 md:w-11 grid place-items-center bg-slate-900 rounded-xl text-slate-300 border border-slate-800 hover:border-rose-400 hover:text-rose-300 transition-all"
+              aria-label="Salir"
+              title="Salir"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                <path fill-rule="evenodd" d="M7.5 3.75A2.25 2.25 0 0 0 5.25 6v12A2.25 2.25 0 0 0 7.5 20.25h4.5a.75.75 0 0 0 0-1.5H7.5A.75.75 0 0 1 6.75 18V6A.75.75 0 0 1 7.5 5.25H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M12.97 8.47a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H9a.75.75 0 0 1 0-1.5h5.69l-1.72-1.72a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+
+            <p x-show="reportStatusText" x-text="reportStatusText" class="text-[10px] text-cyan-300 font-bold uppercase tracking-wide ml-1"></p>
+          </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-900/70 p-5 rounded-3xl border border-slate-800">
+            <h3 class="text-[10px] font-black text-cyan-300 uppercase mb-8 tracking-widest">Web (Actividad)</h3>
+            <div class="flex items-end gap-2 h-24">
+              {webChart.map((d) => (
+                <button
+                  @click={`filterDay = (filterDay === '${d.label}' ? '' : '${d.label}'); tab = 'web'`}
+                  class="flex-1 rounded-t-lg relative transition-all duration-300"
+                  style={`height: ${(d.count / maxVal) * 100}%; background-color: rgba(34, 211, 238, 0.18)`}
+                  :class={`filterDay === '${d.label}' ? '!bg-cyan-500 shadow-lg shadow-cyan-500/20' : ''`}
+                >
+                  <span class="absolute -top-6 w-full text-center text-[9px] font-black text-cyan-300">{d.count}</span>
+                  <div class="absolute bottom-[-22px] w-full text-center text-[8px] font-bold text-slate-500 uppercase">{d.label}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div class="bg-slate-900/70 p-5 rounded-3xl border border-slate-800">
+            <h3 class="text-[10px] font-black text-emerald-300 uppercase mb-8 tracking-widest">WhatsApp (Actividad)</h3>
+            <div class="flex items-end gap-2 h-24">
+              {whatsChart.map((d) => (
+                <button
+                  @click={`filterDay = (filterDay === '${d.label}' ? '' : '${d.label}'); tab = 'whats'`}
+                  class="flex-1 rounded-t-lg relative transition-all duration-300"
+                  style={`height: ${(d.count / maxVal) * 100}%; background-color: rgba(52, 211, 153, 0.18)`}
+                  :class={`filterDay === '${d.label}' ? '!bg-emerald-500 shadow-lg shadow-emerald-500/20' : ''`}
+                >
+                  <span class="absolute -top-6 w-full text-center text-[9px] font-black text-emerald-300">{d.count}</span>
+                  <div class="absolute bottom-[-22px] w-full text-center text-[8px] font-bold text-slate-500 uppercase">{d.label}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 px-2 pt-4">
+          <div class="flex gap-2 p-1 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl">
+            <button @click="tab = 'web'" :class="tab === 'web' ? 'bg-cyan-600 text-white' : 'text-slate-500'" class="px-6 py-2 rounded-xl text-[10px] font-black uppercase transition-all">Web</button>
+            <button @click="tab = 'whats'" :class="tab === 'whats' ? 'bg-emerald-600 text-white' : 'text-slate-500'" class="px-6 py-2 rounded-xl text-[10px] font-black uppercase transition-all">WhatsApp</button>
+          </div>
+
+          <div class="relative w-full md:w-80">
+            <input
+              x-model="searchQuery"
+              type="text"
+              placeholder="🔍 Buscar por texto..."
+              class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:ring-1 focus:ring-cyan-500 outline-none w-full"
+            />
+            <button x-show="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2.5 text-slate-500 hover:text-white text-lg">×</button>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
+          <div x-show="tab === 'web'">
+            <table class="w-full text-left table-fixed">
+              <thead class="bg-slate-950/90 text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-800">
+                <tr>
+                  <th class="px-4 py-4 w-20">Fecha</th>
+                  <th class="px-4 py-4">Mensaje Web</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/80">
+                {webMessages.map((m) => {
+                  const originalTxt = m.message?.text || m.message?.content || "";
+                  const safeTxt = cleanJS(originalTxt);
+                  const label = new Date(m.created_at).toLocaleDateString("es-MX", {
+                    weekday: "short",
+                    day: "numeric",
+                    timeZone: panelConfig.timezone,
+                  });
+                  const displayDate = new Date(m.created_at).toLocaleString("es-MX", {
+                    timeZone: panelConfig.timezone,
+                  });
+
+                  return (
+                    <tr
+                      x-show={`(filterDay === '' || filterDay === '${label}') && ('${safeTxt.toLowerCase()}'.includes(searchQuery.toLowerCase()))`}
+                      class="hover:bg-cyan-500/10 cursor-pointer transition-colors"
+                      @click={`openModal('MENSAJE WEB', '${safeTxt}', '${displayDate}')`}
+                    >
+                      <td class="px-4 py-2 leading-none">
+                        <div class="text-[10px] font-black text-cyan-300">
+                          {new Date(m.created_at).toLocaleDateString("es-MX", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            timeZone: panelConfig.timezone,
+                          })}
+                        </div>
+                        <div class="text-[9px] opacity-40 font-mono">
+                          {new Date(m.created_at).toLocaleTimeString("es-MX", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            timeZone: panelConfig.timezone,
+                          })}
+                        </div>
+                      </td>
+                      <td class="px-4 py-2 text-xs text-slate-300 truncate">{originalTxt}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div x-show="tab === 'whats'">
+            <table class="w-full text-left table-fixed">
+              <thead class="bg-slate-950/90 text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-800">
+                <tr>
+                  <th class="px-4 py-4 w-20">Fecha</th>
+                  <th class="px-4 py-4 w-32">WhatsApp</th>
+                  <th class="px-4 py-4">Mensaje</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/80">
+                {whatsMessages.map((m) => {
+                  const originalTxt = m.message?.text || m.message?.content || "";
+                  const safeTxt = cleanJS(originalTxt);
+                  const phone = (m.session_id || "").replace("whatsapp:", "").split("@")[0];
+                  const label = new Date(m.created_at).toLocaleDateString("es-MX", {
+                    weekday: "short",
+                    day: "numeric",
+                    timeZone: panelConfig.timezone,
+                  });
+                  const displayDate = new Date(m.created_at).toLocaleString("es-MX", {
+                    timeZone: panelConfig.timezone,
+                  });
+
+                  return (
+                    <tr
+                      x-show={`(filterDay === '' || filterDay === '${label}') && ('${safeTxt.toLowerCase()}'.includes(searchQuery.toLowerCase()) || '${phone}'.includes(searchQuery))`}
+                      class="hover:bg-emerald-500/10 cursor-pointer transition-colors"
+                      @click={`openModal('WA: ${phone}', '${safeTxt}', '${displayDate}')`}
+                    >
+                      <td class="px-4 py-2 leading-none">
+                        <div class="text-[10px] font-black text-emerald-300">
+                          {new Date(m.created_at).toLocaleDateString("es-MX", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            timeZone: panelConfig.timezone,
+                          })}
+                        </div>
+                        <div class="text-[9px] opacity-40 font-mono">
+                          {new Date(m.created_at).toLocaleTimeString("es-MX", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            timeZone: panelConfig.timezone,
+                          })}
+                        </div>
+                      </td>
+                      <td class="px-4 py-2">
+                        <div class="text-[11px] font-black tracking-tight text-slate-200">+{phone}</div>
+                      </td>
+                      <td class="px-4 py-2 text-xs text-slate-300 truncate">{originalTxt}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  [x-cloak] { display: none !important; }
+</style>
+
+<script is:inline define:vars={{ webMessages, whatsMessages }}>
+  window.panelMetricsState = function () {
+    return {
+      loginEmail: '',
+      loginPassword: '',
+      loginError: '',
+      loginLoading: false,
+      tab: 'whats',
+      filterDay: '',
+      searchQuery: '',
+      modalOpen: false,
+      mTitle: '',
+      mText: '',
+      mDate: '',
+      reportLoading: false,
+      reportStatusText: '',
+      toastOpen: false,
+      toastMessage: '',
+      toastTone: 'ok',
+      toastTimer: null,
+      webData: Array.isArray(webMessages) ? webMessages : [],
+      whatsData: Array.isArray(whatsMessages) ? whatsMessages : [],
+
+      openModal(title, text, date) {
+        this.mTitle = title;
+        this.mText = text;
+        this.mDate = date;
+        this.modalOpen = true;
+      },
+
+      showToast(message, tone) {
+        this.toastMessage = message;
+        this.toastTone = tone || 'ok';
+        this.toastOpen = true;
+        if (this.toastTimer) clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => {
+          this.toastOpen = false;
+        }, 2800);
+      },
+
+      async sendReportEmail() {
+        if (this.reportLoading) return;
+
+        this.reportLoading = true;
+        this.reportStatusText = 'Enviando reporte...';
+
+        try {
+          const res = await fetch('/api/send-report', {
+            method: 'POST'
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            this.showToast(data.message || 'Error al enviar reporte', 'error');
+            this.reportStatusText = 'Error';
+            return;
+          }
+
+          this.showToast('Reporte enviado', 'ok');
+          this.reportStatusText = 'Enviado';
+        } catch (error) {
+          console.error(error);
+          this.showToast('Error de red', 'error');
+          this.reportStatusText = 'Error';
+        } finally {
+          this.reportLoading = false;
+          setTimeout(() => {
+            this.reportStatusText = '';
+          }, 3000);
+        }
+      },
+
+      async logout() {
+        try {
+          const res = await fetch('/api/logout', {
+            method: 'POST'
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            this.showToast(data.message || 'No se pudo cerrar sesión', 'error');
+            return;
+          }
+
+          window.location.reload();
+        } catch (error) {
+          console.error('logout error:', error);
+          this.showToast('Error de red al cerrar sesión', 'error');
+        }
+      },
+
+      downloadCsv7d() {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+        const toRecord = (channel, item) => {
+          const rawMessage = item && item.message ? item.message : {};
+          const rawText = rawMessage.text || rawMessage.content || '';
+          const sessionId = item && item.session_id ? item.session_id : '';
+          const phone = channel === 'whatsapp'
+            ? sessionId.replace('whatsapp:', '').split('@')[0]
+            : '';
+
+          return {
+            channel,
+            created_at: item && item.created_at ? item.created_at : '',
+            phone,
+            message: String(rawText).replace(/\r?\n|\r/g, ' ').trim()
+          };
+        };
+
+        const allRows = []
+          .concat(this.webData.map((item) => toRecord('web', item)))
+          .concat(this.whatsData.map((item) => toRecord('whatsapp', item)))
+          .filter((row) => row.created_at && new Date(row.created_at) >= sevenDaysAgo);
+
+        const doubleQuote = '"';
+        const quoteRegex = /"/g;
+        const escapeCsv = (value) => doubleQuote + String(value || '').replace(quoteRegex, '""') + doubleQuote;
+        const csvLines = [
+          ['channel', 'created_at', 'phone', 'message'].map(escapeCsv).join(','),
+          ...allRows.map((row) =>
+            [row.channel, row.created_at, row.phone, row.message].map(escapeCsv).join(',')
+          )
+        ];
+
+        const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${'mente'}-panel-7d-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      },
+
+      clearFilters() {
+        this.searchQuery = '';
+        this.filterDay = '';
+      },
+
+      async submitLogin() {
+        if (this.loginLoading) return;
+
+        this.loginError = '';
+
+        if (!this.loginEmail || !this.loginPassword) {
+          this.loginError = 'Email y contraseña son obligatorios';
+          return;
+        }
+
+        this.loginLoading = true;
+
+        try {
+          const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: this.loginEmail,
+              password: this.loginPassword
+            })
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            this.loginError = data.message || 'No se pudo iniciar sesión';
+            return;
+          }
+
+          window.location.reload();
+        } catch (error) {
+          console.error('Error de login:', error);
+          this.loginError = 'Error de red al iniciar sesión';
+        } finally {
+          this.loginLoading = false;
+        }
+      },
+    };
+  };
+</script>
+
+<script is:inline src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
