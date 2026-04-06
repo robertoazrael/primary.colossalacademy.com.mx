@@ -1,5 +1,5 @@
 ---
-const contactEndpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT ?? '';
+const contactEndpoint = '/api/contact';
 const campusMapEmbed = 'https://maps.google.com/maps?q=21.00525,-89.591833&z=17&output=embed';
 ---
 
@@ -128,11 +128,6 @@ const campusMapEmbed = 'https://maps.google.com/maps?q=21.00525,-89.591833&z=17&
 			event.preventDefault();
 			clearError();
 			successPanel?.classList.add('hidden');
-
-			if (!contactEndpoint) {
-				showError('The public contact form endpoint variable is missing.');
-				return;
-			}
 
 			const name = nameInput instanceof HTMLInputElement ? nameInput.value.trim() : '';
 			const email = emailInput instanceof HTMLInputElement ? emailInput.value.trim() : '';

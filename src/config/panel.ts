@@ -1,6 +1,6 @@
 export const panelConfig = {
-  siteSlug: 'colop',
-  panelTitle: 'Panel de estadísticas',
+  siteSlug: 'colossal-primary',
+  panelTitle: 'Panel de conversaciones',
   reportWebhookSuffix: 'panel-report',
   timezone: 'America/Merida'
 };

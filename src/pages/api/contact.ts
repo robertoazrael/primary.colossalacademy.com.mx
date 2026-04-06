@@ -23,7 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const body = await request.json();
-    const webhookUrl = `${baseUrl}/webhook/${panelConfig.siteSlug}-contact`;
+    const webhookUrl = `${baseUrl}/webhook/contact-${panelConfig.siteSlug}`;
 
     const res = await fetch(webhookUrl, {
       method: 'POST',
