@@ -1,4 +1,6 @@
 ---
+import primaryKidsLogo from "../assets/school/primary/logo-colossal-kids.jpg";
+
 const { currentPath = "/" } = Astro.props;
 
 const links = [
@@ -18,7 +20,7 @@ const isActive = (href) => currentPath === href;
   <div class="container flex flex-col gap-4 py-4 md:flex-row md:items-center md:justify-between">
     <a href="/" class="brand-mark" aria-label="Primary Colossal Academy home">
       <img
-        src="/favicon.svg"
+        src={primaryKidsLogo.src}
         alt="Colossal Academy logo"
         class="brand-mark__logo"
         loading="eager"
