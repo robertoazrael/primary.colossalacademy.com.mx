@@ -40,7 +40,9 @@ const {
     </div>
 
     <div class="hero-visual">
-      <img src={imageSrc} alt={imageAlt} class="h-full w-full object-cover" loading="eager" />
+      <slot name="media">
+        <img src={imageSrc} alt={imageAlt} class="h-full w-full object-cover" loading="eager" />
+      </slot>
     </div>
   </div>
 </section>

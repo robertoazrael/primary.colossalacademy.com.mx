@@ -3,7 +3,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import CTASection from "../components/CTASection.astro";
 import FeatureCard from "../components/FeatureCard.astro";
 import Hero from "../components/Hero.astro";
+import HeroCarousel from "../components/HeroCarousel.astro";
 import SectionIntro from "../components/SectionIntro.astro";
+import slide01 from "../assets/school/carrusel/slide01.webp";
+import slide02 from "../assets/school/carrusel/slide02.webp";
+import slide03 from "../assets/school/carrusel/slide03.webp";
+import slide04 from "../assets/school/carrusel/slide04.webp";
+import slide05 from "../assets/school/carrusel/slide05.webp";
+import slide06 from "../assets/school/carrusel/slide06.webp";
+import slide07 from "../assets/school/carrusel/slide07.webp";
+import slide08 from "../assets/school/carrusel/slide08.webp";
+import slide09 from "../assets/school/carrusel/slide09.webp";
 
 const values = [
   {
@@ -45,6 +55,63 @@ const storyCards = [
       "The campus is shaped by a broad educational outlook that values gifted learning, thoughtful pedagogy, and a close partnership with families."
   }
 ];
+
+const heroSlides = [
+  {
+    src: slide01.src,
+    alt: "Colossal Academy Primary campus carousel image 1",
+    width: slide01.width,
+    height: slide01.height
+  },
+  {
+    src: slide02.src,
+    alt: "Colossal Academy Primary campus carousel image 2",
+    width: slide02.width,
+    height: slide02.height
+  },
+  {
+    src: slide03.src,
+    alt: "Colossal Academy Primary campus carousel image 3",
+    width: slide03.width,
+    height: slide03.height
+  },
+  {
+    src: slide04.src,
+    alt: "Colossal Academy Primary campus carousel image 4",
+    width: slide04.width,
+    height: slide04.height
+  },
+  {
+    src: slide05.src,
+    alt: "Colossal Academy Primary campus carousel image 5",
+    width: slide05.width,
+    height: slide05.height
+  },
+  {
+    src: slide06.src,
+    alt: "Colossal Academy Primary campus carousel image 6",
+    width: slide06.width,
+    height: slide06.height
+  },
+  {
+    src: slide07.src,
+    alt: "Colossal Academy Primary campus carousel image 7",
+    width: slide07.width,
+    height: slide07.height
+  },
+  {
+    src: slide08.src,
+    alt: "Colossal Academy Primary campus carousel image 8",
+    width: slide08.width,
+    height: slide08.height
+  },
+  {
+    src: slide09.src,
+    alt: "Colossal Academy Primary campus carousel image 9",
+    width: slide09.width,
+    height: slide09.height
+  }
+];
 ---
 
 <BaseLayout
@@ -61,7 +128,9 @@ const storyCards = [
     secondaryCta={{ href: "/approach", label: "Explore the approach" }}
     imageSrc="/images/admissions-welcome.svg"
     imageAlt="Illustrated family and school welcome scene"
-  />
+  >
+    <HeroCarousel slot="media" slides={heroSlides} intervalMs={2000} transitionMs={500} />
+  </Hero>
 
   <section class="section-spacing pt-8">
     <div class="container space-y-10">
