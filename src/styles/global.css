@@ -137,11 +137,63 @@ img {
 }
 
 .hero-visual {
+  position: relative;
   overflow: hidden;
   border: 1px solid var(--color-primary-soft);
   border-radius: calc(var(--radius-card) + 4px);
   background: linear-gradient(180deg, rgba(240, 244, 255, 0.9), rgba(247, 246, 243, 0.95));
   box-shadow: var(--shadow-card);
+}
+
+.hero-carousel {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  width: min(100%, 23rem);
+  height: auto;
+  min-height: clamp(28rem, 44vw, 36rem);
+  margin-inline: auto;
+  isolation: isolate;
+  background: transparent;
+}
+
+.hero-carousel__slide {
+  position: absolute;
+  inset: 0.04rem;
+  width: calc(100% - 0.08rem);
+  height: calc(100% - 0.08rem);
+  object-fit: contain;
+  object-position: center;
+  opacity: 0;
+  transform: scale(1.24);
+  transition:
+    opacity var(--hero-carousel-transition, 500ms) ease-in-out,
+    transform var(--hero-carousel-transition, 500ms) ease-out;
+  will-change: opacity, transform;
+}
+
+.hero-carousel__slide.is-active {
+  opacity: 1;
+  transform: scale(1.22);
+  z-index: 2;
+}
+
+.hero-carousel__slide.is-leaving {
+  opacity: 0;
+  transform: scale(1.23);
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel__slide {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero-carousel {
+    min-height: auto;
+  }
 }
 
 .section-spacing {

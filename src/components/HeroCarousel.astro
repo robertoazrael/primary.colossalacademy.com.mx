@@ -1,0 +1,79 @@
+---
+interface Slide {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+}
+
+interface Props {
+  slides: Slide[];
+  intervalMs?: number;
+  transitionMs?: number;
+}
+
+const { slides, intervalMs = 2000, transitionMs = 500 } = Astro.props;
+---
+
+<div
+  class="hero-carousel"
+  data-hero-carousel
+  data-interval={intervalMs}
+  data-transition={transitionMs}
+  aria-label="Campus image gallery"
+>
+  {
+    slides.map((slide, index) => (
+      <img
+        src={slide.src}
+        alt={slide.alt}
+        width={slide.width}
+        height={slide.height}
+        loading={index === 0 ? "eager" : "lazy"}
+        class:list={[
+          "hero-carousel__slide",
+          index === 0 && "is-active"
+        ]}
+      />
+    ))
+  }
+</div>
+
+<script>
+  const carousels = document.querySelectorAll("[data-hero-carousel]");
+
+  for (const carousel of carousels) {
+    const slides = Array.from(carousel.querySelectorAll(".hero-carousel__slide"));
+
+    if (slides.length < 2) continue;
+
+    const intervalMs = Number(carousel.getAttribute("data-interval")) || 2000;
+    const transitionMs = Number(carousel.getAttribute("data-transition")) || 500;
+    let activeIndex = 0;
+
+    carousel.style.setProperty("--hero-carousel-transition", `${transitionMs}ms`);
+
+    const showSlide = (nextIndex) => {
+      const currentSlide = slides[activeIndex];
+      const nextSlide = slides[nextIndex];
+
+      if (!currentSlide || !nextSlide || currentSlide === nextSlide) return;
+
+      currentSlide.classList.remove("is-active");
+      currentSlide.classList.add("is-leaving");
+
+      nextSlide.classList.add("is-active");
+
+      window.setTimeout(() => {
+        currentSlide.classList.remove("is-leaving");
+      }, transitionMs);
+
+      activeIndex = nextIndex;
+    };
+
+    window.setInterval(() => {
+      const nextIndex = (activeIndex + 1) % slides.length;
+      showSlide(nextIndex);
+    }, intervalMs);
+  }
+</script>
