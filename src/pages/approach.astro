@@ -5,6 +5,7 @@ import FeatureCard from "../components/FeatureCard.astro";
 import Hero from "../components/Hero.astro";
 import SectionIntro from "../components/SectionIntro.astro";
 import ThreePillarSection from "../components/ThreePillarSection.astro";
+import expertGuidancePhoto from "../assets/school/primary/colossal-expert-guidance.webp";
 
 const foundations = [
   {
@@ -106,8 +107,8 @@ const pillars = [
     description="At Primary Colossal Academy, children are active participants in their learning. They are invited to think, question, choose, create, and reflect within a structure designed by skilled educators."
     primaryCta={{ href: "/admissions", label: "Explore admissions" }}
     secondaryCta={{ href: "/contact", label: "Talk with our team" }}
-    imageSrc="/images/inquiry-projects.svg"
-    imageAlt="Illustrated project-based learning environment"
+    imageSrc={expertGuidancePhoto.src}
+    imageAlt="Teacher offering expert guidance to students at Colossal Academy Primary"
   />
 
   <section class="section-spacing pt-8">
