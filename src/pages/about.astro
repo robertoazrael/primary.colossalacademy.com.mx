@@ -1,177 +1,105 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CTASection from "../components/CTASection.astro";
-import FeatureCard from "../components/FeatureCard.astro";
-import Hero from "../components/Hero.astro";
-import HeroCarousel from "../components/HeroCarousel.astro";
-import SectionIntro from "../components/SectionIntro.astro";
-import slide01 from "../assets/school/carrusel/slide01.webp";
-import slide02 from "../assets/school/carrusel/slide02.webp";
-import slide03 from "../assets/school/carrusel/slide03.webp";
-import slide04 from "../assets/school/carrusel/slide04.webp";
-import slide05 from "../assets/school/carrusel/slide05.webp";
-import slide06 from "../assets/school/carrusel/slide06.webp";
-import slide07 from "../assets/school/carrusel/slide07.webp";
-import slide08 from "../assets/school/carrusel/slide08.webp";
-import slide09 from "../assets/school/carrusel/slide09.webp";
+import founderPhoto from "../assets/school/about/colossal-miss-courtney.webp";
+import logoCAMB from "../assets/school/about/colossal-logo-camb.webp";
+import logoCHRI from "../assets/school/about/colossal-logo-chri.webp";
+import logoCONRICYT from "../assets/school/about/colossal-logo-conricyt.webp";
+import logoEton from "../assets/school/about/colossal-logo-eton.jpeg.webp";
+import logoGeorgia from "../assets/school/about/colossal-logo-georgia.webp";
+import logoLIU from "../assets/school/about/colossal-logo-liu.webp";
+import logoMACM from "../assets/school/about/colossal-logo-macm.webp";
+import logoROLC from "../assets/school/about/colossal-logo-rolc.webp";
+import logoSEP from "../assets/school/about/colossal-logo-sep.webp";
+import logoUCF from "../assets/school/about/colossal-logo-ucf.webp";
 
-const values = [
-  {
-    title: "Curiosity with purpose",
-    description:
-      "We want children to ask big questions and learn how to investigate them with discipline, care, and joy."
-  },
-  {
-    title: "Warmth and trust",
-    description:
-      "Children learn best when they feel known, respected, and safe enough to attempt challenging work."
-  },
-  {
-    title: "High expectations, thoughtfully held",
-    description:
-      "We believe young learners are capable of more depth, nuance, and originality than traditional models often allow."
-  },
-  {
-    title: "Character and autonomy",
-    description:
-      "Academic growth matters, and so do reflection, responsibility, empathy, and the ability to work independently."
-  }
-];
-
-const storyCards = [
-  {
-    title: "An English-language campus in Merida",
-    description:
-      "Primary Colossal Academy serves families seeking a globally minded education rooted in strong relationships and intellectual ambition."
-  },
-  {
-    title: "A clear educational vision",
-    description:
-      "The school is designed for children who thrive when learning is active, challenging, and responsive to their strengths."
-  },
-  {
-    title: "Leadership with an international perspective",
-    description:
-      "The campus is shaped by a broad educational outlook that values gifted learning, thoughtful pedagogy, and a close partnership with families."
-  }
-];
-
-const heroSlides = [
-  {
-    src: slide01.src,
-    alt: "Colossal Academy Primary campus carousel image 1",
-    width: slide01.width,
-    height: slide01.height
-  },
-  {
-    src: slide02.src,
-    alt: "Colossal Academy Primary campus carousel image 2",
-    width: slide02.width,
-    height: slide02.height
-  },
-  {
-    src: slide03.src,
-    alt: "Colossal Academy Primary campus carousel image 3",
-    width: slide03.width,
-    height: slide03.height
-  },
-  {
-    src: slide04.src,
-    alt: "Colossal Academy Primary campus carousel image 4",
-    width: slide04.width,
-    height: slide04.height
-  },
-  {
-    src: slide05.src,
-    alt: "Colossal Academy Primary campus carousel image 5",
-    width: slide05.width,
-    height: slide05.height
-  },
-  {
-    src: slide06.src,
-    alt: "Colossal Academy Primary campus carousel image 6",
-    width: slide06.width,
-    height: slide06.height
-  },
-  {
-    src: slide07.src,
-    alt: "Colossal Academy Primary campus carousel image 7",
-    width: slide07.width,
-    height: slide07.height
-  },
-  {
-    src: slide08.src,
-    alt: "Colossal Academy Primary campus carousel image 8",
-    width: slide08.width,
-    height: slide08.height
-  },
-  {
-    src: slide09.src,
-    alt: "Colossal Academy Primary campus carousel image 9",
-    width: slide09.width,
-    height: slide09.height
-  }
+const founderLogos = [
+  { image: logoCAMB, alt: "CAMB logo" },
+  { image: logoCHRI, alt: "CHRI logo" },
+  { image: logoCONRICYT, alt: "CONRICyT logo" },
+  { image: logoEton, alt: "Eton logo" },
+  { image: logoGeorgia, alt: "University of Georgia logo" },
+  { image: logoLIU, alt: "LIU logo" },
+  { image: logoMACM, alt: "MACM logo" },
+  { image: logoROLC, alt: "ROLC logo" },
+  { image: logoSEP, alt: "SEP logo" },
+  { image: logoUCF, alt: "UCF logo" }
 ];
 ---
 
 <BaseLayout
   title="About | Primary Colossal Academy"
-  description="Learn about the story, mission, values, and educational vision behind Primary Colossal Academy in Merida."
+  description="Learn about the educational leadership behind Colossal Academy and the experience that shaped its vision."
   currentPath="/about"
 >
-  <Hero
-    eyebrow="About the school"
-    title="A warm primary campus with"
-    highlight="clear purpose and high expectations."
-    description="Primary Colossal Academy exists to give children an education that is intellectually ambitious, emotionally grounded, and carefully designed for meaningful growth."
-    primaryCta={{ href: "/contact", label: "Request information" }}
-    secondaryCta={{ href: "/approach", label: "Explore the approach" }}
-    imageSrc="/images/admissions-welcome.svg"
-    imageAlt="Illustrated family and school welcome scene"
-  >
-    <HeroCarousel slot="media" slides={heroSlides} intervalMs={2000} transitionMs={500} />
-  </Hero>
+  <section class="relative isolate overflow-hidden bg-[linear-gradient(180deg,#f8f4ea_0%,#fffdf8_46%,#ffffff_100%)]">
+    <div class="absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,_rgba(221,184,106,0.22),_transparent_65%)]"></div>
+    <div class="container section-spacing grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <div class="space-y-6">
+        <p class="eyebrow">About the founder</p>
+        <h1 class="max-w-3xl text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
+          Built by an Educator. Designed for Children.
+        </h1>
+        <div class="max-w-3xl space-y-5 text-lg leading-8 text-slate-700">
+          <p>
+            Colossal Academy was created from two things: a deep commitment to education, and the
+            desire to give my own child the kind of school every child deserves.
+          </p>
+          <p>
+            I have spent my career leading schools, designing curriculum, and working with
+            education systems across five continents. I studied at the University of California,
+            San Diego, El Colegio de México, Masaryk University, and the Harvard Graduate School
+            of Education.
+          </p>
+          <p>
+            My work has been used in over 80 universities, received the Yass Award, and been
+            featured in Forbes. I have also spoken at education and AI conferences across the
+            United States, Latin America, and the Caribbean.
+          </p>
+          <p>
+            This school brings that experience into something simple: a place where children are
+            known, challenged, and prepared for the future.
+          </p>
+        </div>
+      </div>
 
-  <section class="section-spacing pt-8">
-    <div class="container space-y-10">
-      <SectionIntro
-        eyebrow="Our story"
-        title="Built for families looking for more than a conventional primary model"
-        description="This campus brings together careful academics, a strong sense of belonging, and a learning culture that respects bright children as capable thinkers."
-      />
-      <div class="grid gap-6 md:grid-cols-3">
-        {storyCards.map((item) => <FeatureCard {...item} />)}
+      <div class="mx-auto w-full max-w-md">
+        <div class="overflow-hidden rounded-[2rem] border border-[#d9c6a0] bg-white p-3 shadow-[0_24px_80px_rgba(15,23,42,0.14)]">
+          <img
+            src={founderPhoto.src}
+            alt="Portrait of the founder of Colossal Academy"
+            class="aspect-[4/5] w-full rounded-[1.5rem] object-cover object-top"
+            loading="eager"
+          />
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section-spacing bg-white">
-    <div class="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-      <SectionIntro
-        eyebrow="Mission"
-        title="To cultivate capable, curious, and confident young learners"
-        description="We aim to nurture children who think deeply, express themselves clearly, care about their communities, and develop the independence to keep learning throughout life."
-      />
-      <div class="feature-card feature-card-highlight">
-        <p class="eyebrow">Educational vision</p>
-        <p class="mt-4 text-lg leading-8 text-slate-700">
-          We believe gifted and advanced learners deserve a school experience that combines challenge,
-          creativity, emotional understanding, and authentic student voice. Our work is to create that
-          environment every day.
+  <section class="section-spacing bg-white pt-8">
+    <div class="container space-y-8">
+      <div class="max-w-3xl space-y-3">
+        <p class="eyebrow">Selected organizations and institutions</p>
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
+          A body of work shaped across schools, universities, and education systems
+        </h2>
+        <p class="text-lg leading-8 text-slate-600">
+          These organizations reflect part of the professional context behind the vision for
+          Colossal Academy.
         </p>
       </div>
-    </div>
-  </section>
 
-  <section class="section-spacing">
-    <div class="container space-y-10">
-      <SectionIntro
-        eyebrow="Values"
-        title="The principles that shape the school"
-        description="These values guide classroom life, family communication, and the overall experience children have on campus."
-      />
-      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {values.map((item) => <FeatureCard {...item} />)}
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        {founderLogos.map(({ image, alt }) => (
+          <div class="group flex min-h-28 items-center justify-center rounded-3xl border border-slate-200 bg-slate-50/70 px-6 py-5 transition duration-300 hover:-translate-y-1 hover:border-[#cfaa57] hover:bg-white hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+            <img
+              src={image.src}
+              alt={alt}
+              class="max-h-12 w-auto max-w-full object-contain opacity-75 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+              loading="lazy"
+            />
+          </div>
+        ))}
       </div>
     </div>
   </section>
