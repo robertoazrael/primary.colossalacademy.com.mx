@@ -1,98 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CTASection from "../components/CTASection.astro";
-import FeatureCard from "../components/FeatureCard.astro";
 import Hero from "../components/Hero.astro";
-import SectionIntro from "../components/SectionIntro.astro";
-import ThreePillarSection from "../components/ThreePillarSection.astro";
+import artPhoto from "../assets/school/primary/colossal-kids-at-art.webp";
 import expertGuidancePhoto from "../assets/school/primary/colossal-expert-guidance.webp";
-
-const foundations = [
-  {
-    title: "Student voice and choice",
-    description:
-      "Children have meaningful opportunities to help shape topics, questions, products, and next steps within a well-designed framework."
-  },
-  {
-    title: "Rigorous academic guidance",
-    description:
-      "Teachers protect coherence and standards, making sure student ownership is paired with clear academic outcomes."
-  },
-  {
-    title: "Reflection and revision",
-    description:
-      "Students learn to evaluate their work, respond to feedback, and improve quality over time."
-  }
-];
-
-const modelCards = [
-  {
-    title: "Start with strong questions",
-    description:
-      "Units are framed around meaningful ideas that invite children to connect knowledge, evidence, and imagination."
-  },
-  {
-    title: "Offer purposeful pathways",
-    description:
-      "Students may investigate through discussion, writing, design, research, models, experiments, or presentations."
-  },
-  {
-    title: "Differentiate with intention",
-    description:
-      "Teachers adapt challenge, support, grouping, and pacing to meet learners where they are without flattening expectations."
-  },
-  {
-    title: "Build durable habits",
-    description:
-      "Planning, collaboration, self-management, and communication are taught directly as part of the learning process."
-  },
-  {
-    title: "Use tools responsibly",
-    description:
-      "Technology supports research, creation, and communication when appropriate, always under thoughtful adult guidance."
-  },
-  {
-    title: "Make learning visible",
-    description:
-      "Children share work, explain thinking, and see their own growth through feedback, documentation, and celebration."
-  }
-];
-
-const pillars = [
-  {
-    subtitle: "Teacher role",
-    title: "Designer, mentor, and guide",
-    description:
-      "Teachers remain central. They establish rigor, coach thinking, and know when to scaffold, stretch, or step back.",
-    points: [
-      "Designs standards-based learning sequences",
-      "Mentors children through challenge and reflection",
-      "Protects both depth and emotional safety"
-    ]
-  },
-  {
-    subtitle: "Student role",
-    title: "Engaged learner with growing agency",
-    description:
-      "Students contribute ideas, make choices, and take on greater responsibility as their confidence and maturity grow.",
-    points: [
-      "Practices ownership in age-appropriate ways",
-      "Learns to ask, plan, revise, and present",
-      "Develops self-knowledge as a learner"
-    ]
-  },
-  {
-    subtitle: "Environment role",
-    title: "Structure that supports possibility",
-    description:
-      "The classroom environment is calm, rich, and intentionally prepared so children can think deeply and work independently.",
-    points: [
-      "Clear routines and strong culture",
-      "Resources that invite inquiry and making",
-      "Flexible spaces for focus and collaboration"
-    ]
-  }
-];
+import labPhoto from "../assets/school/primary/colossal-kids-at-lab.webp";
 ---
 
 <BaseLayout
@@ -112,34 +24,55 @@ const pillars = [
   />
 
   <section class="section-spacing pt-8">
-    <div class="container space-y-10">
-      <SectionIntro
-        eyebrow="What this means"
-        title="Personalized learning without losing clarity or rigor"
-        description="We reinterpret student agency for a primary school context: children have meaningful ownership, while teachers maintain coherence, care, and strong academic direction."
-      />
-      <div class="grid gap-6 md:grid-cols-3">
-        {foundations.map((item) => <FeatureCard {...item} />)}
+    <div class="container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+      <div class="space-y-5">
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">Laboratory</h2>
+        <div class="space-y-5 text-lg leading-8 text-slate-600">
+          <p>
+            Our science lab is an AI-powered, hands-on environment where students engage in biology, chemistry, and physics using real tools. They work with microscopes and digital probes, lab glassware and safe reagents, and sensors, microcontrollers, and robotics kits to investigate living systems, chemical reactions, and forces, motion, and energy through interdisciplinary projects.
+          </p>
+          <p>
+            The kind of work we do is best seen through our projects. In an ocean clean-up study, students analyze water samples, test pollutants, and design and program filtration systems. In a project on sustainably feeding the world, they study ecosystems, soil, and energy systems while building automated solutions. This work extends into the atelier, where art becomes a tool for designing, prototyping, and communicating ideas.
+          </p>
+        </div>
+      </div>
+      <div class="overflow-hidden rounded-3xl shadow-2xl shadow-slate-900/10">
+        <img
+          src={labPhoto.src}
+          alt="Primary students working with lab tools at Colossal Academy"
+          width={labPhoto.width}
+          height={labPhoto.height}
+          loading="lazy"
+          class="aspect-[4/3] h-full w-full object-cover"
+        />
       </div>
     </div>
   </section>
 
-  <ThreePillarSection
-    eyebrow="How it works"
-    title="Three elements working together"
-    description="This model depends on children, teachers, and the learning environment each playing a deliberate role."
-    pillars={pillars}
-  />
-
   <section class="section-spacing bg-white">
-    <div class="container space-y-10">
-      <SectionIntro
-        eyebrow="In practice"
-        title="What learning looks like day to day"
-        description="The approach becomes real through consistent classroom habits, carefully designed projects, and responsive teaching."
-      />
-      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {modelCards.map((item) => <FeatureCard {...item} />)}
+    <div class="container grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+      <div class="overflow-hidden rounded-3xl shadow-2xl shadow-slate-900/10 lg:order-first">
+        <img
+          src={artPhoto.src}
+          alt="Primary students creating artwork in the atelier at Colossal Academy"
+          width={artPhoto.width}
+          height={artPhoto.height}
+          loading="lazy"
+          class="aspect-[4/3] h-full w-full object-cover"
+        />
+      </div>
+      <div class="space-y-5">
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
+          A Reggio Emilia–Inspired Atelier and Arts Program
+        </h2>
+        <div class="space-y-5 text-lg leading-8 text-slate-600">
+          <p>
+            Our atelier is a studio for thinking, creating, and self-expression. Students work with high-quality materials in visual arts—including sculpture, painting, and drawing—developing technique, attention to detail, and the ability to express ideas, perspectives, and emotions with clarity. We view art as a fundamental language: a way for children to make sense of the world, communicate meaning, and develop confidence in their own voice.
+          </p>
+          <p>
+            This work is complemented by a strong performing arts program. Students participate in choir, learn instruments as part of a school band, and engage in music theater, combining voice, movement, and storytelling. Across all disciplines, the arts are treated as a serious practice—students create, rehearse, revise, and present work with intention, building both creative expression and disciplined craftsmanship.
+          </p>
+        </div>
       </div>
     </div>
   </section>
