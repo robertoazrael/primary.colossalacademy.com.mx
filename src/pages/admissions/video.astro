@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import primaryKidsLogo from "../../assets/school/primary/logo-colossal-kids.jpg";
+
+const guidedVisitUrl =
+  "https://cal.com/primary-colossal-academy-mx/guided-visit-colossal-academy-primary";
+---
+
+<BaseLayout
+  title="See Colossal Academy Primary in action"
+  description="Watch the full Colossal Kids 2.0 story and reserve a guided visit at Colossal Academy Primary."
+  currentPath="/admissions/video"
+  showSiteChrome={false}
+  showChat={false}
+  ogImage="/images/admissions-welcome.svg"
+  ogImageAlt="Illustrated welcome scene for Colossal Academy Primary admissions"
+>
+  <div class="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8">
+    <div class="pointer-events-none absolute -left-24 top-24 h-64 w-64 rounded-full bg-[color:rgba(87,141,175,0.1)] blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -right-24 bottom-12 h-72 w-72 rounded-full bg-[color:rgba(32,187,150,0.12)] blur-3xl" aria-hidden="true"></div>
+
+    <header class="container relative flex items-center justify-between">
+      <a href="/" class="brand-mark" aria-label="Primary Colossal Academy home">
+        <img
+          src={primaryKidsLogo.src}
+          alt="Colossal Academy logo"
+          class="brand-mark__logo"
+          loading="eager"
+        />
+        <span>
+          <span class="brand-mark__title">Colossal Academy</span>
+          <span class="brand-mark__subtitle">Primary Campus</span>
+        </span>
+      </a>
+      <span class="hidden rounded-full bg-white/70 px-3 py-2 text-xs font-bold text-[color:var(--color-secondary)] shadow-sm sm:inline-flex">
+        Admissions
+      </span>
+    </header>
+
+    <section class="container relative grid gap-8 pb-8 pt-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-16 lg:pb-16 lg:pt-20" aria-labelledby="video-title">
+      <div class="max-w-xl space-y-5 lg:order-1">
+        <p class="eyebrow">Colossal Kids 2.0</p>
+        <h1 id="video-title" class="text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl">
+          See Primary <span class="text-[color:var(--color-primary)]">in action.</span>
+        </h1>
+        <p class="max-w-md text-base leading-7 text-slate-600 sm:text-lg">
+          Watch the full story, then come experience the campus for yourself.
+        </p>
+        <a
+          href={guidedVisitUrl}
+          class="btn-primary w-full sm:w-auto"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Reserve a guided visit
+        </a>
+      </div>
+
+      <div class="relative mx-auto w-full max-w-[25rem] lg:order-2 lg:max-w-[28rem]">
+        <div class="absolute -right-4 -top-4 h-16 w-16 rounded-[1.5rem] border border-white/80 bg-[color:var(--color-bg-highlight)] shadow-[var(--shadow-card)] sm:-right-6 sm:-top-6" aria-hidden="true">
+          <svg viewBox="0 0 64 64" class="h-full w-full p-4 text-[color:var(--color-primary)]" fill="none" aria-hidden="true">
+            <path d="M32 11v42M11 32h42" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+            <circle cx="32" cy="32" r="9" stroke="currentColor" stroke-width="3"></circle>
+          </svg>
+        </div>
+        <div class="overflow-hidden rounded-[2rem] border border-[color:var(--color-primary-soft)] bg-slate-950 p-2 shadow-[0_24px_60px_rgba(59,52,131,0.2)] sm:rounded-[2.4rem] sm:p-3">
+          <video
+            class="aspect-[9/16] w-full rounded-[1.5rem] bg-black object-cover sm:rounded-[1.9rem]"
+            controls
+            playsinline
+            preload="metadata"
+            poster="/images/admissions-welcome.svg"
+          >
+            <source src="/media/admissions/colossal-kids-2-0-full-whatsapp.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
